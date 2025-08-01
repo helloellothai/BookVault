@@ -635,6 +635,7 @@
         <!-- Genre Selection -->
         <div class="button-row" style="margin-bottom: 10px;">
             <select id="genre-selector" style="padding: 12px; border: 2px solid #007AFF; border-radius: 8px; font-size: 16px; font-weight: bold; color: #007AFF; background: white; flex: 1;">
+                <option value="all">📖 All Books</option>
                 <option value="main">📚 Main Library</option>
                 <option value="fiction">📖 Fiction</option>
                 <option value="mystery">🔍 Mystery</option>
@@ -1209,13 +1210,37 @@
             }
         }
 
-        // Get current genre books
+        // Get current genre books (with "All Books" support)
         function getCurrentBooks() {
+            if (state.currentGenre === 'all') {
+                // Return all books from all genres combined
+                let allBooks = [];
+                Object.keys(state.books).forEach(genre => {
+                    if (Array.isArray(state.books[genre])) {
+                        // Add genre info to each book for display
+                        const booksWithGenre = state.books[genre].map(book => ({
+                            ...book,
+                            displayGenre: genre
+                        }));
+                        allBooks = allBooks.concat(booksWithGenre);
+                    }
+                });
+                return allBooks;
+            }
             return state.books[state.currentGenre] || [];
         }
 
-        // Add book to current genre
+        // Add book to current genre (disabled in "All Books" view)
         function addBookToCurrentGenre(book) {
+            if (state.currentGenre === 'all') {
+                // Default to main library when viewing all books
+                if (!state.books['main']) {
+                    state.books['main'] = [];
+                }
+                state.books['main'].push(book);
+                return;
+            }
+            
             if (!state.books[state.currentGenre]) {
                 state.books[state.currentGenre] = [];
             }
@@ -1843,15 +1868,17 @@
             }
         }
 
-        // Render book card
+        // Render book card (with genre badge for "All Books" view)
         function renderBookCard(item) {
             const collabBadge = item.isCollaborative ? '🤝' : '';
-            const moveButton = !state.isCollaborative ? `<button class="move-button" onclick="moveBook('${item.id}')" title="Move to different category">📁</button>` : '';
+            const genreBadge = state.currentGenre === 'all' && item.displayGenre ? `<span style="background: #007AFF; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; position: absolute; top: 40px; right: 10px;">${item.displayGenre.toUpperCase()}</span>` : '';
+            const moveButton = !state.isCollaborative && state.currentGenre !== 'all' ? `<button class="move-button" onclick="moveBook('${item.id}')" title="Move to different category">📁</button>` : '';
             return `
                 <div class="book-card">
                     <button class="delete-button" onclick="deleteBook('${item.id}')" title="Delete book">×</button>
                     <button class="edit-button" onclick="editBook('${item.id}')" title="Edit book">✏️</button>
                     ${moveButton}
+                    ${genreBadge}
                     ${item.imageUri ? 
                         `<img src="${item.imageUri}" alt="${item.title}" class="book-image" />` :
                         `<div class="placeholder-image">📚</div>`
@@ -2011,12 +2038,19 @@
                     renderBooks();
                     showNotification(`✅ Created new category: ${genreEmoji} ${cleanName}!`);
                 } else {
-                    state.currentGenre = e.target.value;
-                    
-                    // Only reset collaborative state if not in active session
-                    if (!sessionStorage.getItem('bookCollaborativeSession')) {
+                    // Don't allow switching to collaborative mode when viewing all books
+                    if (e.target.value === 'all') {
+                        state.currentGenre = 'all';
                         state.isCollaborative = false;
                         state.sharedCollectionId = null;
+                    } else {
+                        state.currentGenre = e.target.value;
+                        
+                        // Only reset collaborative state if not in active session
+                        if (!sessionStorage.getItem('bookCollaborativeSession')) {
+                            state.isCollaborative = false;
+                            state.sharedCollectionId = null;
+                        }
                     }
                     
                     renderBooks();
