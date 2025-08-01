@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VinylVault - Record Collection Manager</title>
+    <title>BookVault - Book Collection Manager</title>
     
     <style>
         * {
@@ -127,7 +127,7 @@
         
         .preview-image {
             width: 150px;
-            height: 150px;
+            height: 200px;
             object-fit: cover;
             border-radius: 8px;
             margin: 15px auto;
@@ -156,13 +156,13 @@
             transform: scale(1.2);
         }
         
-        .album-grid {
+        .book-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
         
-        .album-card {
+        .book-card {
             background-color: white;
             padding: 15px;
             border-radius: 12px;
@@ -173,13 +173,13 @@
             position: relative;
         }
         
-        .album-card:hover {
+        .book-card:hover {
             transform: translateY(-2px);
         }
         
-        .album-image {
+        .book-image {
             width: 100%;
-            height: 200px;
+            height: 250px;
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 10px;
@@ -187,7 +187,7 @@
         
         .placeholder-image {
             width: 100%;
-            height: 200px;
+            height: 250px;
             background-color: #e0e0e0;
             border-radius: 8px;
             display: flex;
@@ -198,20 +198,20 @@
             margin-bottom: 10px;
         }
         
-        .album-title {
+        .book-title {
             font-weight: bold;
             font-size: 1.1rem;
             margin-bottom: 5px;
             color: #333;
         }
         
-        .album-artist {
+        .book-author {
             color: #666;
             font-size: 1rem;
             margin-bottom: 5px;
         }
         
-        .album-year {
+        .book-year {
             color: #999;
             font-size: 0.9rem;
         }
@@ -285,33 +285,33 @@
             align-items: center;
         }
         
-        .list-album-info {
+        .list-book-info {
             display: flex;
             align-items: center;
         }
         
         .list-image {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 60px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 4px;
             margin-right: 12px;
         }
         
         .list-placeholder {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 60px;
             background-color: #e9ecef;
-            border-radius: 6px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 16px;
             color: #6c757d;
             margin-right: 12px;
         }
         
-        .list-album-title {
+        .list-book-title {
             font-weight: 600;
             font-size: 16px;
             color: #212529;
@@ -410,10 +410,10 @@
         }
         
         .search-result-image {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 90px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 6px;
             margin-right: 15px;
         }
         
@@ -427,7 +427,7 @@
             margin-bottom: 5px;
         }
         
-        .search-result-artist {
+        .search-result-author {
             color: #666;
             font-size: 1rem;
             margin-bottom: 3px;
@@ -495,7 +495,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 200px;
+            width: 150px;
             height: 200px;
             transform: translate(-50%, -50%);
             border: 3px solid #00FF00;
@@ -603,7 +603,7 @@
                 margin-bottom: 10px;
             }
             
-            .album-grid {
+            .book-grid {
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 gap: 15px;
             }
@@ -628,30 +628,30 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1 class="header-title">🎵 VinylVault</h1>
-            <div class="collection-count" id="collection-count">0 albums in collection</div>
+            <h1 class="header-title">📚 BookVault</h1>
+            <div class="collection-count" id="collection-count">0 books in collection</div>
         </div>
 
         <!-- Genre Selection -->
         <div class="button-row" style="margin-bottom: 10px;">
             <select id="genre-selector" style="padding: 12px; border: 2px solid #007AFF; border-radius: 8px; font-size: 16px; font-weight: bold; color: #007AFF; background: white; flex: 1;">
-                <option value="main">🎵 Main Collection</option>
-                <option value="rock">🎸 Rock Collection</option>
-                <option value="jazz">🎷 Jazz Collection</option>
-                <option value="pop">🎤 Pop Collection</option>
-                <option value="hip-hop">🎤 Hip-Hop Collection</option>
-                <option value="country">🤠 Country Collection</option>
-                <option value="classical">🎼 Classical Collection</option>
-                <option value="electronic">🎛️ Electronic Collection</option>
-                <option value="christian">✝️ Christian Collection</option>
-                <option value="custom">➕ Create New Genre</option>
+                <option value="main">📚 Main Library</option>
+                <option value="fiction">📖 Fiction</option>
+                <option value="mystery">🔍 Mystery</option>
+                <option value="sci-fi">🚀 Sci-Fi</option>
+                <option value="romance">💕 Romance</option>
+                <option value="history">🏛️ History</option>
+                <option value="biography">👤 Biography</option>
+                <option value="self-help">🌟 Self-Help</option>
+                <option value="business">💼 Business</option>
+                <option value="custom">➕ Create New Category</option>
             </select>
         </div>
 
         <!-- Search Bar -->
         <input
             type="text"
-            placeholder="Search your collection..."
+            placeholder="Search your library..."
             class="search-input"
             id="search-input"
         />
@@ -659,10 +659,10 @@
         <!-- Action Buttons -->
         <div class="button-row">
             <button class="primary-button" id="find-online-btn">
-                🔍 Find Albums Online
+                🔍 Find Books Online
             </button>
             <button class="secondary-button" id="share-collection-btn">
-                📱 Share Collection
+                📱 Share Library
             </button>
             <button class="secondary-button" id="list-view-btn">
                 📋 List View
@@ -676,41 +676,41 @@
         <div class="toggle-row" id="covers-toggle" style="display: none;">
             <label class="toggle-label">
                 <input type="checkbox" checked id="show-covers-checkbox" class="checkbox" />
-                Show Album Covers
+                Show Book Covers
             </label>
         </div>
 
         <!-- Add Manual Entry Section -->
         <div class="add-section">
-            <h2 class="section-title">Add Album Manually</h2>
+            <h2 class="section-title">Add Book Manually</h2>
             
             <input
                 type="text"
-                placeholder="Album Title"
+                placeholder="Book Title"
                 class="input"
                 id="title-input"
             />
             
             <input
                 type="text"
-                placeholder="Artist"
+                placeholder="Author"
                 class="input"
-                id="artist-input"
+                id="author-input"
             />
             
             <button class="secondary-button" id="auto-fill-btn" style="margin-bottom: 15px; width: 100%;">
-                🎯 Auto-Fill from Album Name
+                🎯 Auto-Fill from Book Name
             </button>
             
             <button class="camera-button" id="camera-btn">
-                📷 Take Photo (+ Smart Album Recognition)
+                📷 Take Photo (+ Smart Book Recognition)
             </button>
             
             <!-- Camera Preview -->
             <div id="camera-preview" class="camera-preview" style="display: none;">
                 <video id="camera-video" class="camera-video" autoplay playsinline muted></video>
                 <div class="focus-frame">
-                    <div class="focus-label">📱 CAPTURE WINDOW - Center album here</div>
+                    <div class="focus-label">📱 CAPTURE WINDOW - Center book here</div>
                     <div class="corner-marker corner-tl"></div>
                     <div class="corner-marker corner-tr"></div>
                     <div class="corner-marker corner-bl"></div>
@@ -718,7 +718,7 @@
                 </div>
                 <div style="margin-top: 15px;">
                     <button class="primary-button" id="capture-btn" style="margin-right: 10px;">
-                        📸 Capture Square
+                        📸 Capture
                     </button>
                     <button class="secondary-button" id="cancel-camera-btn">
                         ❌ Cancel
@@ -730,17 +730,17 @@
             <img id="preview-image" class="preview-image" style="display: none;" />
             
             <div class="button-row">
-                <button class="primary-button" id="add-album-btn">
-                    ➕ Add to Collection
+                <button class="primary-button" id="add-book-btn">
+                    ➕ Add to Library
                 </button>
             </div>
         </div>
 
-        <!-- Album Collection -->
-        <div id="albums-container">
+        <!-- Book Collection -->
+        <div id="books-container">
             <div class="empty-state">
-                <h3>No albums in your collection yet!</h3>
-                <p>Start by searching for albums online or adding them manually.</p>
+                <h3>No books in your library yet!</h3>
+                <p>Start by searching for books online or adding them manually.</p>
             </div>
         </div>
     </div>
@@ -749,14 +749,14 @@
     <div class="modal" id="share-modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">📱 Share Your Collection</h2>
+                <h2 class="modal-title">📱 Share Your Library</h2>
                 <button class="close-button" id="close-share-modal-btn">✕</button>
             </div>
 
             <div style="text-align: center;">
                 <p style="margin-bottom: 20px; color: #666;">
-                    Share your collection with this short link!<br>
-                    <strong>✨ Now with REAL collaboration - others can add albums too!</strong>
+                    Share your library with this short link!<br>
+                    <strong>✨ Now with REAL collaboration - others can add books too!</strong>
                 </p>
 
                 <div id="qr-code-display" style="
@@ -781,16 +781,16 @@
         </div>
     </div>
 
-    <!-- Edit Album Modal -->
+    <!-- Edit Book Modal -->
     <div class="modal" id="edit-modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">✏️ Edit Album</h2>
+                <h2 class="modal-title">✏️ Edit Book</h2>
                 <button class="close-button" id="close-edit-modal-btn">✕</button>
             </div>
 
-            <input type="text" placeholder="Album Title" class="input" id="edit-title-input" />
-            <input type="text" placeholder="Artist" class="input" id="edit-artist-input" />
+            <input type="text" placeholder="Book Title" class="input" id="edit-title-input" />
+            <input type="text" placeholder="Author" class="input" id="edit-author-input" />
             <input type="text" placeholder="Year (optional)" class="input" id="edit-year-input" />
 
             <img id="edit-preview-image" class="preview-image" style="display: none;" />
@@ -810,14 +810,14 @@
     <div class="modal" id="search-modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Search Albums Online</h2>
+                <h2 class="modal-title">Search Books Online</h2>
                 <button class="close-button" id="close-modal-btn">✕</button>
             </div>
 
             <div class="search-container">
                 <input
                     type="text"
-                    placeholder="Search for album or artist..."
+                    placeholder="Search for book or author..."
                     class="input"
                     id="online-search-input"
                     style="flex: 1; margin-bottom: 0;"
@@ -838,7 +838,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // Supabase configuration
+        // Supabase configuration (same as VinylVault)
         const SUPABASE_URL = 'https://ydsgjlsbbwsxzjewktbk.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlkc2dqbHNiYndzeHpqZXdrdGJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwMTc1OTEsImV4cCI6MjA2OTU5MzU5MX0.WfvHuhKdieJbLocKbv2oosBKzKl1dsZu50mA9OUHRtA';
         
@@ -856,7 +856,7 @@
 
         // App state with collaborative support
         let state = {
-            albums: {},  // Local albums: {main: [], rock: [], jazz: []}
+            books: {},  // Local books: {main: [], fiction: [], mystery: []}
             currentGenre: 'main',
             viewMode: 'grid',
             showCovers: true,
@@ -866,7 +866,7 @@
             sharedCollectionId: null
         };
 
-        let editingAlbumId = null;
+        let editingBookId = null;
         let currentCameraStream = null;
 
         // Update debug info
@@ -877,7 +877,7 @@
             }
         }
 
-        // Test Supabase connection
+        // Test Supabase connection (using books table instead of albums)
         async function testSupabaseConnection() {
             if (!supabaseClient) {
                 console.log('❌ Supabase client not initialized');
@@ -887,7 +887,7 @@
             try {
                 // Simple test query
                 const { data, error } = await supabaseClient
-                    .from('collections')
+                    .from('book_collections')
                     .select('id')
                     .limit(1);
 
@@ -919,51 +919,51 @@
                 
                 // Load collection metadata
                 const { data: collection, error: collectionError } = await supabaseClient
-                    .from('collections')
+                    .from('book_collections')
                     .select('*')
                     .eq('id', collectionId)
                     .single();
 
                 if (collectionError) {
                     console.error('❌ Collection not found:', collectionError);
-                    showNotification('❌ Shared collection not found');
+                    showNotification('❌ Shared library not found');
                     return false;
                 }
 
                 console.log('✅ Collection found:', collection);
 
-                // Load albums in this collection
-                const { data: albums, error: albumsError } = await supabaseClient
-                    .from('albums')
+                // Load books in this collection
+                const { data: books, error: booksError } = await supabaseClient
+                    .from('books')
                     .select('*')
                     .eq('collection_id', collectionId)
                     .order('created_at', { ascending: true });
 
-                if (albumsError) {
-                    console.error('❌ Error loading albums:', albumsError);
+                if (booksError) {
+                    console.error('❌ Error loading books:', booksError);
                     return false;
                 }
 
-                console.log(`✅ Loaded ${albums.length} albums from collaborative collection`);
+                console.log(`✅ Loaded ${books.length} books from collaborative collection`);
 
                 // Set up collaborative state
                 state.isCollaborative = true;
                 state.sharedCollectionId = collectionId;
                 state.currentGenre = collection.genre || 'main';
 
-                // Initialize local albums if needed
-                if (!state.albums[state.currentGenre]) {
-                    state.albums[state.currentGenre] = [];
+                // Initialize local books if needed
+                if (!state.books[state.currentGenre]) {
+                    state.books[state.currentGenre] = [];
                 }
 
-                // Replace local albums with collaborative ones
-                state.albums[state.currentGenre] = albums.map(album => ({
-                    id: album.id,
-                    title: album.title,
-                    artist: album.artist,
-                    year: album.year,
-                    imageUri: album.image_uri,
-                    dateAdded: album.created_at,
+                // Replace local books with collaborative ones
+                state.books[state.currentGenre] = books.map(book => ({
+                    id: book.id,
+                    title: book.title,
+                    author: book.author,
+                    year: book.year,
+                    imageUri: book.image_uri,
+                    dateAdded: book.created_at,
                     isCollaborative: true
                 }));
 
@@ -971,14 +971,14 @@
                 document.getElementById('genre-selector').value = state.currentGenre;
                 updateCollectionHeader();
                 
-                showNotification(`🤝 Loaded collaborative collection with ${albums.length} albums!`);
-                updateDebugInfo(`Collab: ${albums.length} albums`);
+                showNotification(`🤝 Loaded collaborative library with ${books.length} books!`);
+                updateDebugInfo(`Collab: ${books.length} books`);
                 
                 return true;
 
             } catch (error) {
                 console.error('❌ Error loading collaborative collection:', error);
-                showNotification('❌ Failed to load shared collection');
+                showNotification('❌ Failed to load shared library');
                 return false;
             }
         }
@@ -986,10 +986,10 @@
         // Update collection header to show collaborative status
         function updateCollectionHeader() {
             const countElement = document.getElementById('collection-count');
-            const currentAlbums = getCurrentAlbums();
+            const currentBooks = getCurrentBooks();
             const genreDisplayName = document.getElementById('genre-selector').selectedOptions[0].textContent;
             
-            let countText = `${currentAlbums.length} albums in ${genreDisplayName}`;
+            let countText = `${currentBooks.length} books in ${genreDisplayName}`;
             
             if (state.isCollaborative) {
                 countText += ' <span class="collaborative-indicator">🤝 COLLABORATIVE</span>';
@@ -1007,8 +1007,8 @@
                 console.log('🔗 Found share ID in URL:', shareId);
                 const success = await loadCollaborativeCollection(shareId);
                 if (success) {
-                    // Store collaborative session info (don't clean URL immediately)
-                    sessionStorage.setItem('vinylCollaborativeSession', JSON.stringify({
+                    // Store collaborative session info
+                    sessionStorage.setItem('bookCollaborativeSession', JSON.stringify({
                         collectionId: shareId,
                         genre: state.currentGenre,
                         timestamp: Date.now()
@@ -1019,7 +1019,7 @@
             }
             
             // Check for stored collaborative session
-            const storedSession = sessionStorage.getItem('vinylCollaborativeSession');
+            const storedSession = sessionStorage.getItem('bookCollaborativeSession');
             if (storedSession) {
                 try {
                     const session = JSON.parse(storedSession);
@@ -1033,129 +1033,129 @@
                     console.error('Error restoring collaborative session:', error);
                 }
                 // Clear invalid session
-                sessionStorage.removeItem('vinylCollaborativeSession');
+                sessionStorage.removeItem('bookCollaborativeSession');
             }
             
             return false;
         }
 
-        // Load albums from localStorage (backwards compatibility)
-        function loadLocalAlbums() {
+        // Load books from localStorage (backwards compatibility)
+        function loadLocalBooks() {
             try {
-                // Load main albums (backwards compatibility)
-                const saved = localStorage.getItem('vinylCollection');
+                // Load main books (backwards compatibility)
+                const saved = localStorage.getItem('bookCollection');
                 if (saved) {
-                    const oldAlbums = JSON.parse(saved);
-                    if (Array.isArray(oldAlbums)) {
-                        state.albums.main = oldAlbums;
+                    const oldBooks = JSON.parse(saved);
+                    if (Array.isArray(oldBooks)) {
+                        state.books.main = oldBooks;
                     }
                 }
 
-                // Load genre-based albums
-                const genreData = localStorage.getItem('vinylGenreCollections');
+                // Load genre-based books
+                const genreData = localStorage.getItem('bookGenreCollections');
                 if (genreData) {
-                    state.albums = { ...state.albums, ...JSON.parse(genreData) };
+                    state.books = { ...state.books, ...JSON.parse(genreData) };
                 }
 
                 // Load custom genres
-                const customGenres = localStorage.getItem('vinylCustomGenres');
+                const customGenres = localStorage.getItem('bookCustomGenres');
                 if (customGenres) {
                     state.customGenres = JSON.parse(customGenres);
                     updateGenreSelector();
                 }
 
                 // Initialize default genres
-                ['main', 'rock', 'jazz', 'pop', 'hip-hop', 'country', 'classical', 'electronic', 'christian'].forEach(genre => {
-                    if (!state.albums[genre]) {
-                        state.albums[genre] = [];
+                ['main', 'fiction', 'mystery', 'sci-fi', 'romance', 'history', 'biography', 'self-help', 'business'].forEach(genre => {
+                    if (!state.books[genre]) {
+                        state.books[genre] = [];
                     }
                 });
 
-                console.log('✅ Local albums loaded');
-                updateDebugInfo('Local albums loaded');
+                console.log('✅ Local books loaded');
+                updateDebugInfo('Local books loaded');
 
             } catch (error) {
-                console.error('❌ Error loading local albums:', error);
-                state.albums = {main: []};
+                console.error('❌ Error loading local books:', error);
+                state.books = {main: []};
             }
         }
 
-        // Save local albums to localStorage
-        function saveLocalAlbums() {
+        // Save local books to localStorage
+        function saveLocalBooks() {
             try {
-                localStorage.setItem('vinylGenreCollections', JSON.stringify(state.albums));
+                localStorage.setItem('bookGenreCollections', JSON.stringify(state.books));
                 if (state.customGenres.length > 0) {
-                    localStorage.setItem('vinylCustomGenres', JSON.stringify(state.customGenres));
+                    localStorage.setItem('bookCustomGenres', JSON.stringify(state.customGenres));
                 }
             } catch (error) {
-                console.error('❌ Error saving local albums:', error);
+                console.error('❌ Error saving local books:', error);
             }
         }
 
-        // Add album to Supabase (collaborative collections)
-        async function addAlbumToSupabase(album) {
+        // Add book to Supabase (collaborative collections)
+        async function addBookToSupabase(book) {
             if (!state.isCollaborative || !state.sharedCollectionId || !supabaseClient) {
                 return false;
             }
             
             try {
-                console.log('🔄 Adding album to Supabase:', album.title);
+                console.log('🔄 Adding book to Supabase:', book.title);
                 
                 const { data, error } = await supabaseClient
-                    .from('albums')
+                    .from('books')
                     .insert([{
                         collection_id: state.sharedCollectionId,
-                        title: album.title,
-                        artist: album.artist,
-                        year: album.year || null,
-                        image_uri: album.imageUri || null
+                        title: book.title,
+                        author: book.author,
+                        year: book.year || null,
+                        image_uri: book.imageUri || null
                     }])
                     .select()
                     .single();
 
                 if (error) {
-                    console.error('❌ Error adding album to Supabase:', error);
+                    console.error('❌ Error adding book to Supabase:', error);
                     return false;
                 }
 
-                console.log('✅ Album added to Supabase:', data.id);
+                console.log('✅ Book added to Supabase:', data.id);
                 
-                // Update local album with Supabase ID
-                album.id = data.id;
-                album.isCollaborative = true;
+                // Update local book with Supabase ID
+                book.id = data.id;
+                book.isCollaborative = true;
                 
                 return true;
             } catch (error) {
-                console.error('❌ Error adding album to collaborative collection:', error);
+                console.error('❌ Error adding book to collaborative collection:', error);
                 return false;
             }
         }
 
-        // Delete album from Supabase
-        async function deleteAlbumFromSupabase(albumId) {
+        // Delete book from Supabase
+        async function deleteBookFromSupabase(bookId) {
             if (!state.isCollaborative || !supabaseClient) return true;
             
             try {
                 const { error } = await supabaseClient
-                    .from('albums')
+                    .from('books')
                     .delete()
-                    .eq('id', albumId);
+                    .eq('id', bookId);
 
                 if (error) {
-                    console.error('❌ Error deleting album from Supabase:', error);
+                    console.error('❌ Error deleting book from Supabase:', error);
                     return false;
                 }
                 
-                console.log('✅ Album deleted from Supabase');
+                console.log('✅ Book deleted from Supabase');
                 return true;
             } catch (error) {
-                console.error('❌ Error deleting collaborative album:', error);
+                console.error('❌ Error deleting collaborative book:', error);
                 return false;
             }
         }
 
         // Create new collaborative collection
-        async function createCollaborativeCollection(albums, genre) {
+        async function createCollaborativeCollection(books, genre) {
             if (!supabaseClient) {
                 throw new Error('Supabase not available');
             }
@@ -1165,9 +1165,9 @@
                 
                 // Create collection
                 const { data: collection, error: collectionError } = await supabaseClient
-                    .from('collections')
+                    .from('book_collections')
                     .insert([{
-                        name: `${genre.charAt(0).toUpperCase() + genre.slice(1)} Collection`,
+                        name: `${genre.charAt(0).toUpperCase() + genre.slice(1)} Library`,
                         genre: genre,
                         is_public: true
                     }])
@@ -1180,25 +1180,25 @@
 
                 console.log('✅ Collection created:', collection.id);
 
-                // Add albums to collection
-                if (albums.length > 0) {
-                    const albumInserts = albums.map(album => ({
+                // Add books to collection
+                if (books.length > 0) {
+                    const bookInserts = books.map(book => ({
                         collection_id: collection.id,
-                        title: album.title,
-                        artist: album.artist,
-                        year: album.year || null,
-                        image_uri: album.imageUri || null
+                        title: book.title,
+                        author: book.author,
+                        year: book.year || null,
+                        image_uri: book.imageUri || null
                     }));
 
-                    const { error: albumsError } = await supabaseClient
-                        .from('albums')
-                        .insert(albumInserts);
+                    const { error: booksError } = await supabaseClient
+                        .from('books')
+                        .insert(bookInserts);
 
-                    if (albumsError) {
-                        throw albumsError;
+                    if (booksError) {
+                        throw booksError;
                     }
 
-                    console.log(`✅ Added ${albums.length} albums to collection`);
+                    console.log(`✅ Added ${books.length} books to collection`);
                 }
 
                 return collection.id;
@@ -1209,17 +1209,17 @@
             }
         }
 
-        // Get current genre albums
-        function getCurrentAlbums() {
-            return state.albums[state.currentGenre] || [];
+        // Get current genre books
+        function getCurrentBooks() {
+            return state.books[state.currentGenre] || [];
         }
 
-        // Add album to current genre
-        function addAlbumToCurrentGenre(album) {
-            if (!state.albums[state.currentGenre]) {
-                state.albums[state.currentGenre] = [];
+        // Add book to current genre
+        function addBookToCurrentGenre(book) {
+            if (!state.books[state.currentGenre]) {
+                state.books[state.currentGenre] = [];
             }
-            state.albums[state.currentGenre].push(album);
+            state.books[state.currentGenre].push(book);
         }
 
         // Update genre selector with custom genres
@@ -1257,12 +1257,12 @@
             const qrContainer = document.getElementById('qr-code-display');
             qrContainer.innerHTML = `
                 <div style="padding: 20px; text-align: center;">
-                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">🤝 Collaborative Collection Link</p>
+                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">🤝 Collaborative Library Link</p>
                     <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; word-break: break-all; font-family: monospace; font-size: 14px; margin-bottom: 15px;">
                         ${url}
                     </div>
                     <p style="color: #666; font-size: 14px;">
-                        Anyone with this link can view AND add albums to your ${state.currentGenre} collection!<br>
+                        Anyone with this link can view AND add books to your ${state.currentGenre} library!<br>
                         <strong>✨ Real collaboration enabled!</strong>
                     </p>
                 </div>
@@ -1294,12 +1294,12 @@
             }
         }
 
-        // MusicBrainz API search
-        async function searchAlbumsOnline(query) {
+        // Google Books API search
+        async function searchBooksOnline(query) {
             if (!query.trim()) return [];
             
             try {
-                const searchUrl = `https://musicbrainz.org/ws/2/release/?query=${encodeURIComponent(query)}&fmt=json&limit=20`;
+                const searchUrl = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20`;
                 const response = await fetch(searchUrl);
                 
                 if (!response.ok) {
@@ -1308,71 +1308,74 @@
                 
                 const data = await response.json();
                 
-                if (!data.releases || data.releases.length === 0) {
+                if (!data.items || data.items.length === 0) {
                     return [];
                 }
                 
-                return data.releases
-                    .filter(release => release.title && release['artist-credit']?.[0]?.name)
-                    .map(release => ({
-                        id: release.id,
-                        title: release.title,
-                        artist: release['artist-credit'][0].name,
-                        year: release.date ? release.date.substring(0, 4) : '',
-                        imageUrl: `https://coverartarchive.org/release/${release.id}/front-250`,
-                        mbid: release.id
-                    }))
+                return data.items
+                    .filter(item => item.volumeInfo && item.volumeInfo.title && item.volumeInfo.authors)
+                    .map(item => {
+                        const info = item.volumeInfo;
+                        return {
+                            id: item.id,
+                            title: info.title,
+                            author: info.authors ? info.authors.join(', ') : 'Unknown Author',
+                            year: info.publishedDate ? info.publishedDate.substring(0, 4) : '',
+                            imageUrl: info.imageLinks ? info.imageLinks.thumbnail : null,
+                            isbn: info.industryIdentifiers ? info.industryIdentifiers[0]?.identifier : null
+                        };
+                    })
                     .slice(0, 10);
                     
             } catch (error) {
-                console.error('MusicBrainz search failed:', error);
+                console.error('Google Books search failed:', error);
                 return [];
             }
         }
 
-        // Auto-fill album info from online search
-        async function autoFillAlbumInfo() {
+        // Auto-fill book info from online search
+        async function autoFillBookInfo() {
             const titleInput = document.getElementById('title-input');
-            const artistInput = document.getElementById('artist-input');
+            const authorInput = document.getElementById('author-input');
             const previewImg = document.getElementById('preview-image');
             
-            const query = titleInput.value.trim() || artistInput.value.trim();
+            const query = titleInput.value.trim() || authorInput.value.trim();
             if (!query) {
-                alert('Enter an album title or artist name first!');
+                alert('Enter a book title or author name first!');
                 return;
             }
             
             // Show loading state
             titleInput.placeholder = '🔍 Searching online...';
-            artistInput.placeholder = '🔍 Searching online...';
+            authorInput.placeholder = '🔍 Searching online...';
             
             try {
-                const results = await searchAlbumsOnline(query);
+                const results = await searchBooksOnline(query);
                 if (results.length > 0) {
                     const topResult = results[0];
                     
                     // Fill in the details
                     titleInput.value = topResult.title;
-                    titleInput.placeholder = 'Album Title';
-                    artistInput.value = topResult.artist;
-                    artistInput.placeholder = 'Artist';
+                    titleInput.placeholder = 'Book Title';
+                    authorInput.value = topResult.author;
+                    authorInput.placeholder = 'Author';
                     
-                    // Set the album cover
+                    // Set the book cover
                     if (topResult.imageUrl) {
                         previewImg.src = topResult.imageUrl;
                         previewImg.style.display = 'block';
                         state.currentImageUri = topResult.imageUrl;
                     }
                     
-                    showNotification(`🎯 Found: "${topResult.title}" by ${topResult.artist}!`);
+                    showNotification(`🎯 Found: "${topResult.title}" by ${topResult.author}!`);
                 } else {
-                    titleInput.placeholder = 'Album Title';
-                    artistInput.placeholder = 'Artist';
-                    showNotification('❌ No albums found. Try a different search term.');
+                    titleInput.placeholder = 'Book Title';
+                    authorInput.placeholder = 'Author';
+                    showNotification('❌ No books found. Try a different search term.');
                 }
             } catch (error) {
-                titleInput.placeholder = 'Album Title';
-                artistInput.placeholder = 'Artist';
+                titleInput.placeholder = 'Book Title';
+                authorInput.placeholder = 'Author';
                 showNotification('❌ Search failed. Please try again.');
                 console.error('Auto-fill failed:', error);
             }
@@ -1426,7 +1429,7 @@
             input.click();
         }
 
-        // Capture photo from camera
+        // Capture photo from camera (optimized for book dimensions)
         async function capturePhoto() {
             const video = document.getElementById('camera-video');
             const canvas = document.getElementById('capture-canvas');
@@ -1444,24 +1447,37 @@
             // Draw full video
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            // Calculate center crop (square)
-            const cropSize = Math.min(canvas.width, canvas.height) * 0.5;
+            // Calculate center crop for book ratio (3:4 aspect ratio)
+            const aspectRatio = 3 / 4; // width/height for books
+            let cropWidth, cropHeight;
+            
+            // Determine crop size based on video dimensions
+            if (canvas.width / canvas.height > aspectRatio) {
+                // Video is wider than book ratio
+                cropHeight = Math.min(canvas.height * 0.7, 600);
+                cropWidth = cropHeight * aspectRatio;
+            } else {
+                // Video is taller than book ratio  
+                cropWidth = Math.min(canvas.width * 0.6, 450);
+                cropHeight = cropWidth / aspectRatio;
+            }
+            
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const cropX = centerX - cropSize / 2;
-            const cropY = centerY - cropSize / 2;
+            const cropX = centerX - cropWidth / 2;
+            const cropY = centerY - cropHeight / 2;
             
-            // Create square canvas
+            // Create book-sized canvas (3:4 ratio)
             const croppedCanvas = document.createElement('canvas');
             const croppedCtx = croppedCanvas.getContext('2d');
-            croppedCanvas.width = 400;
+            croppedCanvas.width = 300;
             croppedCanvas.height = 400;
             
-            // Draw center square
+            // Draw cropped area
             croppedCtx.drawImage(
                 canvas, 
-                cropX, cropY, cropSize, cropSize,
-                0, 0, 400, 400
+                cropX, cropY, cropWidth, cropHeight,
+                0, 0, 300, 400
             );
             
             const dataUrl = croppedCanvas.toDataURL('image/jpeg', 0.9);
@@ -1477,7 +1493,7 @@
             previewImg.src = state.currentImageUri;
             previewImg.style.display = 'block';
             
-            showNotification('📷 Photo captured! Enter album details manually or use auto-fill.');
+            showNotification('📷 Photo captured! Enter book details manually or use auto-fill.');
         }
 
         // Close camera preview
@@ -1494,33 +1510,33 @@
             preview.style.display = 'none';
         }
 
-        // Add album to collection (with collaborative support)
-        async function addAlbum() {
+        // Add book to collection (with collaborative support)
+        async function addBook() {
             const title = document.getElementById('title-input').value.trim();
-            const artist = document.getElementById('artist-input').value.trim();
+            const author = document.getElementById('author-input').value.trim();
             
-            if (!title || !artist) {
-                alert('Please enter both title and artist');
+            if (!title || !author) {
+                alert('Please enter both title and author');
                 return;
             }
 
-            const currentAlbums = getCurrentAlbums();
+            const currentBooks = getCurrentBooks();
             
             // Check for duplicates in current genre
-            const duplicate = currentAlbums.find(album => 
-                album.title.toLowerCase() === title.toLowerCase() && 
-                album.artist.toLowerCase() === artist.toLowerCase()
+            const duplicate = currentBooks.find(book => 
+                book.title.toLowerCase() === title.toLowerCase() && 
+                book.author.toLowerCase() === author.toLowerCase()
             );
 
             if (duplicate) {
-                alert(`This album is already in your ${state.currentGenre} collection!`);
+                alert(`This book is already in your ${state.currentGenre} library!`);
                 return;
             }
 
-            const newAlbum = {
+            const newBook = {
                 id: Date.now().toString(),
                 title,
-                artist,
+                author,
                 imageUri: state.currentImageUri,
                 dateAdded: new Date().toISOString(),
                 genre: state.currentGenre
@@ -1528,89 +1544,89 @@
 
             // Try to add to collaborative collection first
             if (state.isCollaborative) {
-                const success = await addAlbumToSupabase(newAlbum);
+                const success = await addBookToSupabase(newBook);
                 if (!success) {
                     showNotification('⚠️ Added locally - collaborative sync failed');
                 }
             }
 
-            addAlbumToCurrentGenre(newAlbum);
+            addBookToCurrentGenre(newBook);
             if (!state.isCollaborative) {
-                saveLocalAlbums();
+                saveLocalBooks();
             }
             
             // Clear form
             document.getElementById('title-input').value = '';
-            document.getElementById('artist-input').value = '';
+            document.getElementById('author-input').value = '';
             document.getElementById('preview-image').style.display = 'none';
             state.currentImageUri = null;
             
-            const collabText = state.isCollaborative ? ' to shared collection' : '';
-            showNotification(`✅ Album added${collabText}!`);
-            renderAlbums();
+            const collabText = state.isCollaborative ? ' to shared library' : '';
+            showNotification(`✅ Book added${collabText}!`);
+            renderBooks();
         }
 
-        // Add album from search results
-        async function addAlbumFromSearch(albumData) {
-            const currentAlbums = getCurrentAlbums();
+        // Add book from search results
+        async function addBookFromSearch(bookData) {
+            const currentBooks = getCurrentBooks();
             
-            const duplicate = currentAlbums.find(album => 
-                album.title.toLowerCase() === albumData.title.toLowerCase() && 
-                album.artist.toLowerCase() === albumData.artist.toLowerCase()
+            const duplicate = currentBooks.find(book => 
+                book.title.toLowerCase() === bookData.title.toLowerCase() && 
+                book.author.toLowerCase() === bookData.author.toLowerCase()
             );
 
             if (duplicate) {
-                alert(`This album is already in your ${state.currentGenre} collection!`);
+                alert(`This book is already in your ${state.currentGenre} library!`);
                 return;
             }
 
-            const newAlbum = {
+            const newBook = {
                 id: Date.now().toString(),
-                title: albumData.title,
-                artist: albumData.artist,
-                year: albumData.year,
-                imageUri: albumData.imageUrl,
+                title: bookData.title,
+                author: bookData.author,
+                year: bookData.year,
+                imageUri: bookData.imageUrl,
                 dateAdded: new Date().toISOString(),
                 source: 'online'
             };
 
             // Add to collaborative collection if applicable
             if (state.isCollaborative) {
-                const success = await addAlbumToSupabase(newAlbum);
+                const success = await addBookToSupabase(newBook);
                 if (!success) {
                     showNotification('⚠️ Added locally - collaborative sync failed');
                 }
             }
 
-            addAlbumToCurrentGenre(newAlbum);
+            addBookToCurrentGenre(newBook);
             if (!state.isCollaborative) {
-                saveLocalAlbums();
+                saveLocalBooks();
             }
             
             document.getElementById('search-modal').style.display = 'none';
             document.getElementById('online-search-input').value = '';
             document.getElementById('search-results').innerHTML = '';
             
-            const collabText = state.isCollaborative ? ' to shared collection' : '';
-            showNotification(`✅ Album added${collabText}!`);
-            renderAlbums();
+            const collabText = state.isCollaborative ? ' to shared library' : '';
+            showNotification(`✅ Book added${collabText}!`);
+            renderBooks();
         }
 
-        // Edit album functionality
-        function editAlbum(albumId) {
-            const currentAlbums = getCurrentAlbums();
-            const album = currentAlbums.find(a => a.id === albumId);
-            if (!album) return;
+        // Edit book functionality
+        function editBook(bookId) {
+            const currentBooks = getCurrentBooks();
+            const book = currentBooks.find(a => a.id === bookId);
+            if (!book) return;
 
-            editingAlbumId = albumId;
+            editingBookId = bookId;
             
-            document.getElementById('edit-title-input').value = album.title;
-            document.getElementById('edit-artist-input').value = album.artist;
-            document.getElementById('edit-year-input').value = album.year || '';
+            document.getElementById('edit-title-input').value = book.title;
+            document.getElementById('edit-author-input').value = book.author;
+            document.getElementById('edit-year-input').value = book.year || '';
             
             const editPreview = document.getElementById('edit-preview-image');
-            if (album.imageUri) {
-                editPreview.src = album.imageUri;
+            if (book.imageUri) {
+                editPreview.src = book.imageUri;
                 editPreview.style.display = 'block';
             } else {
                 editPreview.style.display = 'none';
@@ -1619,28 +1635,34 @@
             document.getElementById('edit-modal').style.display = 'flex';
         }
 
-        // Move album between genres
-        function moveAlbum(albumId) {
-            const currentAlbums = getCurrentAlbums();
-            const album = currentAlbums.find(a => a.id === albumId);
-            if (!album) return;
+        // Move book between genres (fixed for collaborative collections)
+        function moveBook(bookId) {
+            // Don't allow moving books in collaborative collections
+            if (state.isCollaborative) {
+                alert('Cannot move books in collaborative libraries. Books are shared with others in this specific category.');
+                return;
+            }
+            
+            const currentBooks = getCurrentBooks();
+            const book = currentBooks.find(a => a.id === bookId);
+            if (!book) return;
 
             // Get all available genres
-            const allGenres = ['main', 'rock', 'jazz', 'pop', 'hip-hop', 'country', 'classical', 'electronic', 'christian'];
+            const allGenres = ['main', 'fiction', 'mystery', 'sci-fi', 'romance', 'history', 'biography', 'self-help', 'business'];
             const customGenreNames = state.customGenres.map(g => g.id);
             const availableGenres = [...allGenres, ...customGenreNames].filter(g => g !== state.currentGenre);
 
             // Show genre selection
             const genreNames = {
-                'main': '🎵 Main Collection',
-                'rock': '🎸 Rock Collection', 
-                'jazz': '🎷 Jazz Collection',
-                'pop': '🎤 Pop Collection',
-                'hip-hop': '🎤 Hip-Hop Collection',
-                'country': '🤠 Country Collection',
-                'classical': '🎼 Classical Collection',
-                'electronic': '🎛️ Electronic Collection',
-                'christian': '✝️ Christian Collection'
+                'main': '📚 Main Library',
+                'fiction': '📖 Fiction', 
+                'mystery': '🔍 Mystery',
+                'sci-fi': '🚀 Sci-Fi',
+                'romance': '💕 Romance',
+                'history': '🏛️ History',
+                'biography': '👤 Biography',
+                'self-help': '🌟 Self-Help',
+                'business': '💼 Business'
             };
 
             // Add custom genre names
@@ -1649,140 +1671,140 @@
             });
 
             const genreList = availableGenres.map(g => `• ${genreNames[g] || g}`).join('\n');
-            const targetGenre = prompt(`Move "${album.title}" to which genre?\n\nAvailable genres:\n${genreList}\n\nEnter genre name (e.g., "rock", "jazz"):`);
+            const targetGenre = prompt(`Move "${book.title}" to which category?\n\nAvailable categories:\n${genreList}\n\nEnter category name (e.g., "fiction", "mystery", "sci-fi"):`);
 
             if (targetGenre && availableGenres.includes(targetGenre.toLowerCase())) {
                 const target = targetGenre.toLowerCase();
                 
                 // Ensure target genre exists
-                if (!state.albums[target]) {
-                    state.albums[target] = [];
+                if (!state.books[target]) {
+                    state.books[target] = [];
                 }
 
                 // Check for duplicates in target genre
-                const duplicate = state.albums[target].find(a => 
-                    a.title.toLowerCase() === album.title.toLowerCase() && 
-                    a.artist.toLowerCase() === album.artist.toLowerCase()
+                const duplicate = state.books[target].find(a => 
+                    a.title.toLowerCase() === book.title.toLowerCase() && 
+                    a.author.toLowerCase() === book.author.toLowerCase()
                 );
 
                 if (duplicate) {
-                    alert(`"${album.title}" already exists in ${genreNames[target]}!`);
+                    alert(`"${book.title}" already exists in ${genreNames[target]}!`);
                     return;
                 }
 
-                // Move album
-                state.albums[target].push(album);
-                state.albums[state.currentGenre] = state.albums[state.currentGenre].filter(a => a.id !== albumId);
+                // Move book
+                state.books[target].push(book);
+                state.books[state.currentGenre] = state.books[state.currentGenre].filter(a => a.id !== bookId);
                 
-                saveLocalAlbums();
-                renderAlbums();
-                showNotification(`📁 Moved "${album.title}" to ${genreNames[target]}!`);
+                saveLocalBooks();
+                renderBooks();
+                showNotification(`📁 Moved "${book.title}" to ${genreNames[target]}!`);
             }
         }
 
-        function saveEditedAlbum() {
-            if (!editingAlbumId) return;
+        function saveEditedBook() {
+            if (!editingBookId) return;
 
             const title = document.getElementById('edit-title-input').value.trim();
-            const artist = document.getElementById('edit-artist-input').value.trim();
+            const author = document.getElementById('edit-author-input').value.trim();
             const year = document.getElementById('edit-year-input').value.trim();
             
-            if (!title || !artist) {
-                alert('Please enter both title and artist');
+            if (!title || !author) {
+                alert('Please enter both title and author');
                 return;
             }
 
-            const currentAlbums = getCurrentAlbums();
+            const currentBooks = getCurrentBooks();
 
-            // Check for duplicates (exclude current album)
-            const duplicate = currentAlbums.find(album => 
-                album.id !== editingAlbumId &&
-                album.title.toLowerCase() === title.toLowerCase() && 
-                album.artist.toLowerCase() === artist.toLowerCase()
+            // Check for duplicates (exclude current book)
+            const duplicate = currentBooks.find(book => 
+                book.id !== editingBookId &&
+                book.title.toLowerCase() === title.toLowerCase() && 
+                book.author.toLowerCase() === author.toLowerCase()
             );
 
             if (duplicate) {
-                alert('This album is already in your collection!');
+                alert('This book is already in your library!');
                 return;
             }
 
-            // Update the album
-            const albumIndex = state.albums[state.currentGenre].findIndex(a => a.id === editingAlbumId);
-            if (albumIndex !== -1) {
-                state.albums[state.currentGenre][albumIndex] = {
-                    ...state.albums[state.currentGenre][albumIndex],
+            // Update the book
+            const bookIndex = state.books[state.currentGenre].findIndex(a => a.id === editingBookId);
+            if (bookIndex !== -1) {
+                state.books[state.currentGenre][bookIndex] = {
+                    ...state.books[state.currentGenre][bookIndex],
                     title,
-                    artist,
+                    author,
                     year,
                     lastModified: new Date().toISOString()
                 };
                 
                 if (!state.isCollaborative) {
-                    saveLocalAlbums();
+                    saveLocalBooks();
                 }
-                renderAlbums();
+                renderBooks();
                 
                 document.getElementById('edit-modal').style.display = 'none';
-                editingAlbumId = null;
+                editingBookId = null;
                 
-                showNotification('✅ Album updated successfully!');
+                showNotification('✅ Book updated successfully!');
             }
         }
 
         function cancelEdit() {
             document.getElementById('edit-modal').style.display = 'none';
-            editingAlbumId = null;
+            editingBookId = null;
         }
 
-        // Delete album (with collaborative support)
-        async function deleteAlbum(albumId) {
-            if (confirm('Are you sure you want to remove this album from your collection?')) {
+        // Delete book (with collaborative support)
+        async function deleteBook(bookId) {
+            if (confirm('Are you sure you want to remove this book from your library?')) {
                 // Try to delete from collaborative collection first
                 if (state.isCollaborative) {
-                    const success = await deleteAlbumFromSupabase(albumId);
+                    const success = await deleteBookFromSupabase(bookId);
                     if (!success) {
                         showNotification('⚠️ Removed locally - collaborative sync failed');
                     }
                 }
                 
-                state.albums[state.currentGenre] = state.albums[state.currentGenre].filter(album => album.id !== albumId);
+                state.books[state.currentGenre] = state.books[state.currentGenre].filter(book => book.id !== bookId);
                 if (!state.isCollaborative) {
-                    saveLocalAlbums();
+                    saveLocalBooks();
                 }
-                renderAlbums();
-                showNotification('🗑️ Album deleted from collection');
+                renderBooks();
+                showNotification('🗑️ Book deleted from library');
             }
         }
 
-        // Filter and sort albums
-        function getFilteredAndSortedAlbums() {
+        // Filter and sort books
+        function getFilteredAndSortedBooks() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const currentAlbums = getCurrentAlbums();
+            const currentBooks = getCurrentBooks();
             
-            let filtered = currentAlbums.filter(album => {
-                const titleMatch = album.title.toLowerCase().includes(searchTerm);
-                const artistMatch = album.artist.toLowerCase().includes(searchTerm);
-                return titleMatch || artistMatch;
+            let filtered = currentBooks.filter(book => {
+                const titleMatch = book.title.toLowerCase().includes(searchTerm);
+                const authorMatch = book.author.toLowerCase().includes(searchTerm);
+                return titleMatch || authorMatch;
             });
 
             return filtered.sort((a, b) => a.title.localeCompare(b.title));
         }
 
-        // Render albums
-        function renderAlbums() {
-            const container = document.getElementById('albums-container');
-            const data = getFilteredAndSortedAlbums();
-            const currentAlbums = getCurrentAlbums();
+        // Render books
+        function renderBooks() {
+            const container = document.getElementById('books-container');
+            const data = getFilteredAndSortedBooks();
+            const currentBooks = getCurrentBooks();
             
             updateCollectionHeader();
             
-            if (currentAlbums.length === 0) {
+            if (currentBooks.length === 0) {
                 const collabText = state.isCollaborative ? 'shared ' : '';
                 container.innerHTML = `
                     <div class="empty-state">
-                        <h3>No albums in your ${collabText}${state.currentGenre} collection yet!</h3>
-                        <p>Start by searching for albums online or adding them manually.</p>
-                        ${state.isCollaborative ? '<p><strong>🤝 This is a collaborative collection - others can add albums too!</strong></p>' : ''}
+                        <h3>No books in your ${collabText}${state.currentGenre} library yet!</h3>
+                        <p>Start by searching for books online or adding them manually.</p>
+                        ${state.isCollaborative ? '<p><strong>🤝 This is a collaborative library - others can add books too!</strong></p>' : ''}
                     </div>
                 `;
                 return;
@@ -1793,8 +1815,8 @@
             if (searchTerm && data.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <h3>No albums match your search</h3>
-                        <p>Try a different search term or clear the search to see all albums.</p>
+                        <h3>No books match your search</h3>
+                        <p>Try a different search term or clear the search to see all books.</p>
                     </div>
                 `;
                 return;
@@ -1804,8 +1826,8 @@
                 container.innerHTML = `
                     <div class="list-container">
                         <div class="list-header">
-                            <div>Album</div>
-                            <div>Artist</div>
+                            <div>Book</div>
+                            <div>Author</div>
                             <div>Year</div>
                             <div>Actions</div>
                         </div>
@@ -1814,29 +1836,29 @@
                 `;
             } else {
                 container.innerHTML = `
-                    <div class="album-grid">
-                        ${data.map(renderAlbumCard).join('')}
+                    <div class="book-grid">
+                        ${data.map(renderBookCard).join('')}
                     </div>
                 `;
             }
         }
 
-        // Render album card
-        function renderAlbumCard(item) {
+        // Render book card
+        function renderBookCard(item) {
             const collabBadge = item.isCollaborative ? '🤝' : '';
-            const moveButton = !state.isCollaborative ? `<button class="move-button" onclick="moveAlbum('${item.id}')" title="Move to different genre">📁</button>` : '';
+            const moveButton = !state.isCollaborative ? `<button class="move-button" onclick="moveBook('${item.id}')" title="Move to different category">📁</button>` : '';
             return `
-                <div class="album-card">
-                    <button class="delete-button" onclick="deleteAlbum('${item.id}')" title="Delete album">×</button>
-                    <button class="edit-button" onclick="editAlbum('${item.id}')" title="Edit album">✏️</button>
+                <div class="book-card">
+                    <button class="delete-button" onclick="deleteBook('${item.id}')" title="Delete book">×</button>
+                    <button class="edit-button" onclick="editBook('${item.id}')" title="Edit book">✏️</button>
                     ${moveButton}
                     ${item.imageUri ? 
-                        `<img src="${item.imageUri}" alt="${item.title}" class="album-image" />` :
-                        `<div class="placeholder-image">♪</div>`
+                        `<img src="${item.imageUri}" alt="${item.title}" class="book-image" />` :
+                        `<div class="placeholder-image">📚</div>`
                     }
-                    <div class="album-title">${collabBadge} ${item.title}</div>
-                    <div class="album-artist">${item.artist}</div>
-                    ${item.year ? `<div class="album-year">${item.year}</div>` : ''}
+                    <div class="book-title">${collabBadge} ${item.title}</div>
+                    <div class="book-author">${item.author}</div>
+                    ${item.year ? `<div class="book-year">${item.year}</div>` : ''}
                 </div>
             `;
         }
@@ -1847,18 +1869,18 @@
             return `
                 <div class="list-row">
                     <div>
-                        <div class="list-album-info">
+                        <div class="list-book-info">
                             ${state.showCovers && item.imageUri ? 
                                 `<img src="${item.imageUri}" alt="${item.title}" class="list-image" />` :
-                                state.showCovers ? `<div class="list-placeholder">♪</div>` : ''
+                                state.showCovers ? `<div class="list-placeholder">📚</div>` : ''
                             }
-                            <div class="list-album-title">${collabBadge}${item.title}</div>
+                            <div class="list-book-title">${collabBadge}${item.title}</div>
                         </div>
                     </div>
-                    <div>${item.artist}</div>
+                    <div>${item.author}</div>
                     <div>${item.year || '—'}</div>
                     <div>
-                        <button class="delete-button-small" onclick="deleteAlbum('${item.id}')">Delete</button>
+                        <button class="delete-button-small" onclick="deleteBook('${item.id}')">Delete</button>
                     </div>
                 </div>
             `;
@@ -1880,18 +1902,21 @@
             const container = document.getElementById('search-results');
             
             if (results.length === 0) {
-                container.innerHTML = '<div class="loader">No albums found. Try a different search term.</div>';
+                container.innerHTML = '<div class="loader">No books found. Try a different search term.</div>';
                 return;
             }
             
             container.innerHTML = `
                 <h3>Search Results:</h3>
                 ${results.map(item => `
-                    <div class="search-result-card" onclick="addAlbumFromSearch(${JSON.stringify(item).replace(/"/g, '&quot;')})">
-                        <img src="${item.imageUrl}" alt="${item.title}" class="search-result-image" />
+                    <div class="search-result-card" onclick="addBookFromSearch(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                        ${item.imageUrl ? 
+                            `<img src="${item.imageUrl}" alt="${item.title}" class="search-result-image" />` :
+                            `<div class="search-result-image" style="background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">📚</div>`
+                        }
                         <div class="search-result-info">
                             <div class="search-result-title">${item.title}</div>
-                            <div class="search-result-artist">${item.artist}</div>
+                            <div class="search-result-author">${item.author}</div>
                             <div class="search-result-year">${item.year}</div>
                         </div>
                         <button class="add-button-text">ADD</button>
@@ -1903,10 +1928,10 @@
         // Initialize app
         async function initializeApp() {
             try {
-                updateDebugInfo('Loading local albums...');
+                updateDebugInfo('Loading local books...');
                 
-                // Load local albums first
-                loadLocalAlbums();
+                // Load local books first
+                loadLocalBooks();
                 
                 updateDebugInfo('Testing Supabase...');
                 
@@ -1928,10 +1953,10 @@
                 }
                 
                 // Render initial state
-                renderAlbums();
+                renderBooks();
                 updateViewButtons();
                 
-                console.log('✅ VinylVault initialized');
+                console.log('✅ BookVault initialized');
                 
             } catch (error) {
                 console.error('❌ App initialization error:', error);
@@ -1948,18 +1973,18 @@
             // Genre selector change
             document.getElementById('genre-selector').addEventListener('change', (e) => {
                 if (e.target.value === 'custom') {
-                    const genreName = prompt('Enter new genre name (e.g., "Reggae", "Blues"):');
+                    const genreName = prompt('Enter new category name (e.g., "Poetry", "Cooking"):');
                     if (!genreName || !genreName.trim()) {
                         e.target.value = state.currentGenre;
                         return;
                     }
                     
-                    const genreEmoji = prompt('Enter emoji for this genre (e.g., 🎵, 🎸, 🎷):') || '🎵';
+                    const genreEmoji = prompt('Enter emoji for this category (e.g., 📝, 🍳, 🎨):') || '📚';
                     const cleanName = genreName.trim();
                     const genreId = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
                     
-                    if (state.albums[genreId] || state.customGenres.find(g => g.id === genreId)) {
-                        alert('This genre already exists!');
+                    if (state.books[genreId] || state.customGenres.find(g => g.id === genreId)) {
+                        alert('This category already exists!');
                         e.target.value = state.currentGenre;
                         return;
                     }
@@ -1970,58 +1995,58 @@
                         emoji: genreEmoji.trim()
                     });
                     
-                    state.albums[genreId] = [];
+                    state.books[genreId] = [];
                     
                     updateGenreSelector();
                     state.currentGenre = genreId;
                     e.target.value = genreId;
                     
-                    // Reset collaborative state when switching genres (unless we're in a collaborative session)
-                    if (!sessionStorage.getItem('vinylCollaborativeSession')) {
+                    // Only reset collaborative state if not in active session
+                    if (!sessionStorage.getItem('bookCollaborativeSession')) {
                         state.isCollaborative = false;
                         state.sharedCollectionId = null;
                     }
                     
-                    saveLocalAlbums();
-                    renderAlbums();
-                    showNotification(`✅ Created new genre: ${genreEmoji} ${cleanName}!`);
+                    saveLocalBooks();
+                    renderBooks();
+                    showNotification(`✅ Created new category: ${genreEmoji} ${cleanName}!`);
                 } else {
                     state.currentGenre = e.target.value;
                     
                     // Only reset collaborative state if not in active session
-                    if (!sessionStorage.getItem('vinylCollaborativeSession')) {
+                    if (!sessionStorage.getItem('bookCollaborativeSession')) {
                         state.isCollaborative = false;
                         state.sharedCollectionId = null;
                     }
                     
-                    renderAlbums();
+                    renderBooks();
                 }
             });
 
             // Search input
-            document.getElementById('search-input').addEventListener('input', renderAlbums);
+            document.getElementById('search-input').addEventListener('input', renderBooks);
 
             // View mode buttons
             document.getElementById('list-view-btn').addEventListener('click', () => {
                 state.viewMode = 'list';
                 updateViewButtons();
-                renderAlbums();
+                renderBooks();
             });
 
             document.getElementById('grid-view-btn').addEventListener('click', () => {
                 state.viewMode = 'grid';
                 updateViewButtons();
-                renderAlbums();
+                renderBooks();
             });
 
             // Show covers toggle
             document.getElementById('show-covers-checkbox').addEventListener('change', (e) => {
                 state.showCovers = e.target.checked;
-                renderAlbums();
+                renderBooks();
             });
 
             // Auto-fill button
-            document.getElementById('auto-fill-btn').addEventListener('click', autoFillAlbumInfo);
+            document.getElementById('auto-fill-btn').addEventListener('click', autoFillBookInfo);
 
             // Camera button
             document.getElementById('camera-btn').addEventListener('click', takePhoto);
@@ -2030,8 +2055,8 @@
             document.getElementById('capture-btn').addEventListener('click', capturePhoto);
             document.getElementById('cancel-camera-btn').addEventListener('click', closeCameraPreview);
 
-            // Add album button
-            document.getElementById('add-album-btn').addEventListener('click', addAlbum);
+            // Add book button
+            document.getElementById('add-book-btn').addEventListener('click', addBook);
 
             // Find online button
             document.getElementById('find-online-btn').addEventListener('click', () => {
@@ -2040,9 +2065,9 @@
 
             // Share collection button (collaborative sharing)
             document.getElementById('share-collection-btn').addEventListener('click', async () => {
-                const currentAlbums = getCurrentAlbums();
-                if (currentAlbums.length === 0) {
-                    alert(`Add some albums to your ${state.currentGenre} collection first!`);
+                const currentBooks = getCurrentBooks();
+                if (currentBooks.length === 0) {
+                    alert(`Add some books to your ${state.currentGenre} library first!`);
                     return;
                 }
                 
@@ -2055,7 +2080,7 @@
                     updateDebugInfo('Creating share link...');
                     
                     // Create collaborative collection in Supabase
-                    const collectionId = await createCollaborativeCollection(currentAlbums, state.currentGenre);
+                    const collectionId = await createCollaborativeCollection(currentBooks, state.currentGenre);
                     
                     // Create short shareable URL
                     const shareableURL = `${window.location.origin}${window.location.pathname}?share=${collectionId}`;
@@ -2074,7 +2099,7 @@
                 } catch (error) {
                     console.error('❌ Failed to create collaborative collection:', error);
                     updateDebugInfo('Share creation failed');
-                    showNotification('❌ Failed to create shareable collection. Please try again.');
+                    showNotification('❌ Failed to create shareable library. Please try again.');
                 }
             });
 
@@ -2085,8 +2110,8 @@
                 }
             });
 
-            // Edit album functionality
-            document.getElementById('save-edit-btn').addEventListener('click', saveEditedAlbum);
+            // Edit book functionality
+            document.getElementById('save-edit-btn').addEventListener('click', saveEditedBook);
             document.getElementById('cancel-edit-btn').addEventListener('click', cancelEdit);
             document.getElementById('close-edit-modal-btn').addEventListener('click', cancelEdit);
 
@@ -2105,10 +2130,10 @@
                 const query = document.getElementById('online-search-input').value;
                 if (!query.trim()) return;
 
-                document.getElementById('search-results').innerHTML = '<div class="loader">🔍 Searching for albums...</div>';
+                document.getElementById('search-results').innerHTML = '<div class="loader">🔍 Searching for books...</div>';
                 
                 try {
-                    const results = await searchAlbumsOnline(query);
+                    const results = await searchBooksOnline(query);
                     renderSearchResults(results);
                 } catch (error) {
                     document.getElementById('search-results').innerHTML = '<div class="loader">Search failed. Please try again.</div>';
