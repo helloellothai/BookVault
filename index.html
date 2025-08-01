@@ -216,6 +216,17 @@
             font-size: 0.9rem;
         }
         
+        .book-genre-badge {
+            background-color: #007AFF;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        
         .delete-button {
             position: absolute;
             top: 10px;
@@ -584,6 +595,46 @@
             font-size: 12px;
             z-index: 1000;
         }
+
+        .genre-stats {
+            background-color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .genre-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .genre-stat-item {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .genre-stat-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .genre-stat-count {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007AFF;
+        }
+
+        .genre-stat-name {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
         
         @media (max-width: 768px) {
             .container {
@@ -621,6 +672,10 @@
                 padding: 20px;
                 width: 95%;
             }
+
+            .genre-stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
         }
     </style>
 </head>
@@ -635,18 +690,26 @@
         <!-- Genre Selection -->
         <div class="button-row" style="margin-bottom: 10px;">
             <select id="genre-selector" style="padding: 12px; border: 2px solid #007AFF; border-radius: 8px; font-size: 16px; font-weight: bold; color: #007AFF; background: white; flex: 1;">
-                <option value="all">📖 All Books</option>
-                <option value="main">📚 Main Library</option>
+                <option value="all">📚 All Books (Full Collection)</option>
+                <option value="main">📖 Main Library</option>
                 <option value="fiction">📖 Fiction</option>
                 <option value="mystery">🔍 Mystery</option>
                 <option value="sci-fi">🚀 Sci-Fi</option>
+                <option value="fantasy">🐉 Fantasy</option>
                 <option value="romance">💕 Romance</option>
+                <option value="christian">✝️ Christian</option>
                 <option value="history">🏛️ History</option>
                 <option value="biography">👤 Biography</option>
                 <option value="self-help">🌟 Self-Help</option>
                 <option value="business">💼 Business</option>
                 <option value="custom">➕ Create New Category</option>
             </select>
+        </div>
+
+        <!-- Genre Statistics (shown when viewing all books) -->
+        <div class="genre-stats" id="genre-stats" style="display: none;">
+            <h3 style="margin-bottom: 10px;">📊 Library Overview</h3>
+            <div class="genre-stats-grid" id="genre-stats-grid"></div>
         </div>
 
         <!-- Search Bar -->
@@ -698,6 +761,21 @@
                 class="input"
                 id="author-input"
             />
+
+            <!-- Genre selection for new books -->
+            <select id="new-book-genre" style="padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; margin-bottom: 15px;">
+                <option value="main">📖 Main Library</option>
+                <option value="fiction">📖 Fiction</option>
+                <option value="mystery">🔍 Mystery</option>
+                <option value="sci-fi">🚀 Sci-Fi</option>
+                <option value="fantasy">🐉 Fantasy</option>
+                <option value="romance">💕 Romance</option>
+                <option value="christian">✝️ Christian</option>
+                <option value="history">🏛️ History</option>
+                <option value="biography">👤 Biography</option>
+                <option value="self-help">🌟 Self-Help</option>
+                <option value="business">💼 Business</option>
+            </select>
             
             <button class="secondary-button" id="auto-fill-btn" style="margin-bottom: 15px; width: 100%;">
                 🎯 Auto-Fill from Book Name
@@ -742,6 +820,22 @@
             <div class="empty-state">
                 <h3>No books in your library yet!</h3>
                 <p>Start by searching for books online or adding them manually.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Move Book Modal -->
+    <div class="modal" id="move-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📁 Move Book</h2>
+                <button class="close-button" id="close-move-modal-btn">✕</button>
+            </div>
+
+            <p id="move-book-info" style="margin-bottom: 20px; color: #666;"></p>
+
+            <div id="genre-selection" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                <!-- Genre buttons will be populated here -->
             </div>
         </div>
     </div>
@@ -826,6 +920,21 @@
                 <button class="search-button" id="search-btn">Search</button>
             </div>
 
+            <!-- Genre selection for online books -->
+            <select id="online-book-genre" style="padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; margin-bottom: 20px;">
+                <option value="main">📖 Add to Main Library</option>
+                <option value="fiction">📖 Add to Fiction</option>
+                <option value="mystery">🔍 Add to Mystery</option>
+                <option value="sci-fi">🚀 Add to Sci-Fi</option>
+                <option value="fantasy">🐉 Add to Fantasy</option>
+                <option value="romance">💕 Add to Romance</option>
+                <option value="christian">✝️ Add to Christian</option>
+                <option value="history">🏛️ Add to History</option>
+                <option value="biography">👤 Add to Biography</option>
+                <option value="self-help">🌟 Add to Self-Help</option>
+                <option value="business">💼 Add to Business</option>
+            </select>
+
             <div id="search-results"></div>
         </div>
     </div>
@@ -855,10 +964,10 @@
             updateDebugInfo('Supabase failed');
         }
 
-        // App state with collaborative support
+        // App state with enhanced genre support
         let state = {
-            books: {},  // Local books: {main: [], fiction: [], mystery: []}
-            currentGenre: 'main',
+            books: {}, // Genre-based books: {main: [], fiction: [], mystery: [], etc.}
+            currentGenre: 'all', // Start with full collection view
             viewMode: 'grid',
             showCovers: true,
             currentImageUri: null,
@@ -868,7 +977,23 @@
         };
 
         let editingBookId = null;
+        let movingBookId = null;
         let currentCameraStream = null;
+
+        // Available genres with their display info
+        const GENRE_INFO = {
+            'main': { emoji: '📖', name: 'Main Library' },
+            'fiction': { emoji: '📖', name: 'Fiction' },
+            'mystery': { emoji: '🔍', name: 'Mystery' },
+            'sci-fi': { emoji: '🚀', name: 'Sci-Fi' },
+            'fantasy': { emoji: '🐉', name: 'Fantasy' },
+            'romance': { emoji: '💕', name: 'Romance' },
+            'christian': { emoji: '✝️', name: 'Christian' },
+            'history': { emoji: '🏛️', name: 'History' },
+            'biography': { emoji: '👤', name: 'Biography' },
+            'self-help': { emoji: '🌟', name: 'Self-Help' },
+            'business': { emoji: '💼', name: 'Business' }
+        };
 
         // Update debug info
         function updateDebugInfo(status) {
@@ -908,139 +1033,7 @@
             }
         }
 
-        // Load collaborative collection from Supabase
-        async function loadCollaborativeCollection(collectionId) {
-            if (!supabaseClient) {
-                console.log('❌ Cannot load collaborative collection - Supabase not available');
-                return false;
-            }
-
-            try {
-                console.log('🔄 Loading collaborative collection:', collectionId);
-                
-                // Load collection metadata
-                const { data: collection, error: collectionError } = await supabaseClient
-                    .from('book_collections')
-                    .select('*')
-                    .eq('id', collectionId)
-                    .single();
-
-                if (collectionError) {
-                    console.error('❌ Collection not found:', collectionError);
-                    showNotification('❌ Shared library not found');
-                    return false;
-                }
-
-                console.log('✅ Collection found:', collection);
-
-                // Load books in this collection
-                const { data: books, error: booksError } = await supabaseClient
-                    .from('books')
-                    .select('*')
-                    .eq('collection_id', collectionId)
-                    .order('created_at', { ascending: true });
-
-                if (booksError) {
-                    console.error('❌ Error loading books:', booksError);
-                    return false;
-                }
-
-                console.log(`✅ Loaded ${books.length} books from collaborative collection`);
-
-                // Set up collaborative state
-                state.isCollaborative = true;
-                state.sharedCollectionId = collectionId;
-                state.currentGenre = collection.genre || 'main';
-
-                // Initialize local books if needed
-                if (!state.books[state.currentGenre]) {
-                    state.books[state.currentGenre] = [];
-                }
-
-                // Replace local books with collaborative ones
-                state.books[state.currentGenre] = books.map(book => ({
-                    id: book.id,
-                    title: book.title,
-                    author: book.author,
-                    year: book.year,
-                    imageUri: book.image_uri,
-                    dateAdded: book.created_at,
-                    isCollaborative: true
-                }));
-
-                // Update UI
-                document.getElementById('genre-selector').value = state.currentGenre;
-                updateCollectionHeader();
-                
-                showNotification(`🤝 Loaded collaborative library with ${books.length} books!`);
-                updateDebugInfo(`Collab: ${books.length} books`);
-                
-                return true;
-
-            } catch (error) {
-                console.error('❌ Error loading collaborative collection:', error);
-                showNotification('❌ Failed to load shared library');
-                return false;
-            }
-        }
-
-        // Update collection header to show collaborative status
-        function updateCollectionHeader() {
-            const countElement = document.getElementById('collection-count');
-            const currentBooks = getCurrentBooks();
-            const genreDisplayName = document.getElementById('genre-selector').selectedOptions[0].textContent;
-            
-            let countText = `${currentBooks.length} books in ${genreDisplayName}`;
-            
-            if (state.isCollaborative) {
-                countText += ' <span class="collaborative-indicator">🤝 COLLABORATIVE</span>';
-            }
-            
-            countElement.innerHTML = countText;
-        }
-
-        // Check for shared collection in URL
-        async function checkForSharedCollection() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const shareId = urlParams.get('share');
-            
-            if (shareId) {
-                console.log('🔗 Found share ID in URL:', shareId);
-                const success = await loadCollaborativeCollection(shareId);
-                if (success) {
-                    // Store collaborative session info
-                    sessionStorage.setItem('bookCollaborativeSession', JSON.stringify({
-                        collectionId: shareId,
-                        genre: state.currentGenre,
-                        timestamp: Date.now()
-                    }));
-                    console.log('💾 Stored collaborative session');
-                }
-                return success;
-            }
-            
-            // Check for stored collaborative session
-            const storedSession = sessionStorage.getItem('bookCollaborativeSession');
-            if (storedSession) {
-                try {
-                    const session = JSON.parse(storedSession);
-                    console.log('🔄 Restoring collaborative session:', session.collectionId);
-                    const success = await loadCollaborativeCollection(session.collectionId);
-                    if (success) {
-                        console.log('✅ Collaborative session restored');
-                        return true;
-                    }
-                } catch (error) {
-                    console.error('Error restoring collaborative session:', error);
-                }
-                // Clear invalid session
-                sessionStorage.removeItem('bookCollaborativeSession');
-            }
-            
-            return false;
-        }
-
-        // Load books from localStorage (backwards compatibility)
+        // Load books from localStorage
         function loadLocalBooks() {
             try {
                 // Load main books (backwards compatibility)
@@ -1062,11 +1055,11 @@
                 const customGenres = localStorage.getItem('bookCustomGenres');
                 if (customGenres) {
                     state.customGenres = JSON.parse(customGenres);
-                    updateGenreSelector();
+                    updateGenreSelectors();
                 }
 
                 // Initialize default genres
-                ['main', 'fiction', 'mystery', 'sci-fi', 'romance', 'history', 'biography', 'self-help', 'business'].forEach(genre => {
+                Object.keys(GENRE_INFO).forEach(genre => {
                     if (!state.books[genre]) {
                         state.books[genre] = [];
                     }
@@ -1093,176 +1086,147 @@
             }
         }
 
-        // Add book to Supabase (collaborative collections)
-        async function addBookToSupabase(book) {
-            if (!state.isCollaborative || !state.sharedCollectionId || !supabaseClient) {
-                return false;
-            }
-            
-            try {
-                console.log('🔄 Adding book to Supabase:', book.title);
-                
-                const { data, error } = await supabaseClient
-                    .from('books')
-                    .insert([{
-                        collection_id: state.sharedCollectionId,
-                        title: book.title,
-                        author: book.author,
-                        year: book.year || null,
-                        image_uri: book.imageUri || null
-                    }])
-                    .select()
-                    .single();
-
-                if (error) {
-                    console.error('❌ Error adding book to Supabase:', error);
-                    return false;
+        // Get all books across all genres
+        function getAllBooks() {
+            let allBooks = [];
+            Object.keys(state.books).forEach(genre => {
+                if (state.books[genre] && Array.isArray(state.books[genre])) {
+                    state.books[genre].forEach(book => {
+                        allBooks.push({
+                            ...book,
+                            genre: genre,
+                            genreInfo: GENRE_INFO[genre] || state.customGenres.find(g => g.id === genre)
+                        });
+                    });
                 }
-
-                console.log('✅ Book added to Supabase:', data.id);
-                
-                // Update local book with Supabase ID
-                book.id = data.id;
-                book.isCollaborative = true;
-                
-                return true;
-            } catch (error) {
-                console.error('❌ Error adding book to collaborative collection:', error);
-                return false;
-            }
+            });
+            return allBooks;
         }
 
-        // Delete book from Supabase
-        async function deleteBookFromSupabase(bookId) {
-            if (!state.isCollaborative || !supabaseClient) return true;
-            
-            try {
-                const { error } = await supabaseClient
-                    .from('books')
-                    .delete()
-                    .eq('id', bookId);
-
-                if (error) {
-                    console.error('❌ Error deleting book from Supabase:', error);
-                    return false;
-                }
-                
-                console.log('✅ Book deleted from Supabase');
-                return true;
-            } catch (error) {
-                console.error('❌ Error deleting collaborative book:', error);
-                return false;
-            }
-        }
-
-        // Create new collaborative collection
-        async function createCollaborativeCollection(books, genre) {
-            if (!supabaseClient) {
-                throw new Error('Supabase not available');
-            }
-
-            try {
-                console.log('🔄 Creating collaborative collection...');
-                
-                // Create collection
-                const { data: collection, error: collectionError } = await supabaseClient
-                    .from('book_collections')
-                    .insert([{
-                        name: `${genre.charAt(0).toUpperCase() + genre.slice(1)} Library`,
-                        genre: genre,
-                        is_public: true
-                    }])
-                    .select()
-                    .single();
-
-                if (collectionError) {
-                    throw collectionError;
-                }
-
-                console.log('✅ Collection created:', collection.id);
-
-                // Add books to collection
-                if (books.length > 0) {
-                    const bookInserts = books.map(book => ({
-                        collection_id: collection.id,
-                        title: book.title,
-                        author: book.author,
-                        year: book.year || null,
-                        image_uri: book.imageUri || null
-                    }));
-
-                    const { error: booksError } = await supabaseClient
-                        .from('books')
-                        .insert(bookInserts);
-
-                    if (booksError) {
-                        throw booksError;
-                    }
-
-                    console.log(`✅ Added ${books.length} books to collection`);
-                }
-
-                return collection.id;
-
-            } catch (error) {
-                console.error('❌ Error creating collaborative collection:', error);
-                throw error;
-            }
-        }
-
-        // Get current genre books (with "All Books" support)
+        // Get current genre books
         function getCurrentBooks() {
             if (state.currentGenre === 'all') {
-                // Return all books from all genres combined
-                let allBooks = [];
-                Object.keys(state.books).forEach(genre => {
-                    if (Array.isArray(state.books[genre])) {
-                        // Add genre info to each book for display
-                        const booksWithGenre = state.books[genre].map(book => ({
-                            ...book,
-                            displayGenre: genre
-                        }));
-                        allBooks = allBooks.concat(booksWithGenre);
-                    }
-                });
-                return allBooks;
+                return getAllBooks();
             }
             return state.books[state.currentGenre] || [];
         }
 
-        // Add book to current genre (disabled in "All Books" view)
-        function addBookToCurrentGenre(book) {
-            if (state.currentGenre === 'all') {
-                // Default to main library when viewing all books
-                if (!state.books['main']) {
-                    state.books['main'] = [];
-                }
-                state.books['main'].push(book);
-                return;
+        // Add book to specific genre
+        function addBookToGenre(book, genre) {
+            if (!state.books[genre]) {
+                state.books[genre] = [];
             }
-            
-            if (!state.books[state.currentGenre]) {
-                state.books[state.currentGenre] = [];
-            }
-            state.books[state.currentGenre].push(book);
+            state.books[genre].push(book);
         }
 
-        // Update genre selector with custom genres
-        function updateGenreSelector() {
-            const selector = document.getElementById('genre-selector');
-            const customOption = selector.querySelector('option[value="custom"]');
+        // Update genre selectors
+        function updateGenreSelectors() {
+            const selectors = ['genre-selector', 'new-book-genre', 'online-book-genre'];
             
-            // Remove old custom genres
-            selector.querySelectorAll('.custom-genre').forEach(opt => opt.remove());
+            selectors.forEach(selectorId => {
+                const selector = document.getElementById(selectorId);
+                if (!selector) return;
+                
+                const customOption = selector.querySelector('option[value="custom"]');
+                
+                // Remove old custom genres
+                selector.querySelectorAll('.custom-genre').forEach(opt => opt.remove());
+                
+                // Add custom genres
+                state.customGenres.forEach(genre => {
+                    const option = document.createElement('option');
+                    option.value = genre.id;
+                    option.textContent = `${genre.emoji} ${genre.name}`;
+                    option.className = 'custom-genre';
+                    if (customOption) {
+                        selector.insertBefore(option, customOption);
+                    } else {
+                        selector.appendChild(option);
+                    }
+                });
+            });
+        }
+
+        // Update collection header
+        function updateCollectionHeader() {
+            const countElement = document.getElementById('collection-count');
+            const allBooks = getAllBooks();
+            const currentBooks = getCurrentBooks();
             
+            let countText;
+            if (state.currentGenre === 'all') {
+                countText = `${allBooks.length} books total across all genres`;
+            } else {
+                const genreInfo = GENRE_INFO[state.currentGenre] || state.customGenres.find(g => g.id === state.currentGenre);
+                const genreDisplayName = genreInfo ? `${genreInfo.emoji} ${genreInfo.name}` : state.currentGenre;
+                countText = `${currentBooks.length} books in ${genreDisplayName}`;
+            }
+            
+            if (state.isCollaborative) {
+                countText += ' <span class="collaborative-indicator">🤝 COLLABORATIVE</span>';
+            }
+            
+            countElement.innerHTML = countText;
+        }
+
+        // Update genre statistics
+        function updateGenreStats() {
+            const statsContainer = document.getElementById('genre-stats');
+            const statsGrid = document.getElementById('genre-stats-grid');
+            
+            if (state.currentGenre !== 'all') {
+                statsContainer.style.display = 'none';
+                return;
+            }
+
+            statsContainer.style.display = 'block';
+            
+            // Calculate stats for each genre
+            const genreStats = [];
+            
+            // Add default genres
+            Object.keys(GENRE_INFO).forEach(genreId => {
+                const count = state.books[genreId] ? state.books[genreId].length : 0;
+                if (count > 0) {
+                    genreStats.push({
+                        id: genreId,
+                        name: GENRE_INFO[genreId].name,
+                        emoji: GENRE_INFO[genreId].emoji,
+                        count: count
+                    });
+                }
+            });
+
             // Add custom genres
             state.customGenres.forEach(genre => {
-                const option = document.createElement('option');
-                option.value = genre.id;
-                option.textContent = `${genre.emoji} ${genre.name}`;
-                option.className = 'custom-genre';
-                selector.insertBefore(option, customOption);
+                const count = state.books[genre.id] ? state.books[genre.id].length : 0;
+                if (count > 0) {
+                    genreStats.push({
+                        id: genre.id,
+                        name: genre.name,
+                        emoji: genre.emoji,
+                        count: count
+                    });
+                }
             });
+
+            // Sort by count (descending)
+            genreStats.sort((a, b) => b.count - a.count);
+
+            // Render stats
+            statsGrid.innerHTML = genreStats.map(stat => `
+                <div class="genre-stat-item" onclick="switchToGenre('${stat.id}')">
+                    <div class="genre-stat-count">${stat.count}</div>
+                    <div class="genre-stat-name">${stat.emoji} ${stat.name}</div>
+                </div>
+            `).join('');
+        }
+
+        // Switch to specific genre
+        function switchToGenre(genreId) {
+            state.currentGenre = genreId;
+            document.getElementById('genre-selector').value = genreId;
+            renderBooks();
         }
 
         // Show notification
@@ -1275,48 +1239,6 @@
             setTimeout(() => {
                 notification.remove();
             }, 4000);
-        }
-
-        // Show share link
-        function showShareLink(url) {
-            const qrContainer = document.getElementById('qr-code-display');
-            qrContainer.innerHTML = `
-                <div style="padding: 20px; text-align: center;">
-                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">🤝 Collaborative Library Link</p>
-                    <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; word-break: break-all; font-family: monospace; font-size: 14px; margin-bottom: 15px;">
-                        ${url}
-                    </div>
-                    <p style="color: #666; font-size: 14px;">
-                        Anyone with this link can view AND add books to your ${state.currentGenre} library!<br>
-                        <strong>✨ Real collaboration enabled!</strong>
-                    </p>
-                </div>
-            `;
-        }
-
-        // Copy to clipboard
-        async function copyToClipboard(text) {
-            try {
-                await navigator.clipboard.writeText(text);
-                showNotification('📋 Link copied to clipboard!');
-            } catch (error) {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                textArea.style.position = 'fixed';
-                textArea.style.opacity = '0';
-                document.body.appendChild(textArea);
-                textArea.select();
-                
-                try {
-                    document.execCommand('copy');
-                    showNotification('📋 Link copied to clipboard!');
-                } catch (err) {
-                    alert('❌ Copy failed. Please copy manually:\n\n' + text);
-                }
-                
-                document.body.removeChild(textArea);
-            }
         }
 
         // Google Books API search
@@ -1454,7 +1376,7 @@
             input.click();
         }
 
-        // Capture photo from camera (optimized for book dimensions)
+        // Capture photo from camera
         async function capturePhoto() {
             const video = document.getElementById('camera-video');
             const canvas = document.getElementById('capture-canvas');
@@ -1535,26 +1457,31 @@
             preview.style.display = 'none';
         }
 
-        // Add book to collection (with collaborative support)
+        // Add book to collection
         async function addBook() {
             const title = document.getElementById('title-input').value.trim();
             const author = document.getElementById('author-input').value.trim();
+            const genre = document.getElementById('new-book-genre').value;
             
             if (!title || !author) {
                 alert('Please enter both title and author');
                 return;
             }
 
-            const currentBooks = getCurrentBooks();
+            // Check for duplicates in target genre
+            if (!state.books[genre]) {
+                state.books[genre] = [];
+            }
             
-            // Check for duplicates in current genre
-            const duplicate = currentBooks.find(book => 
+            const duplicate = state.books[genre].find(book => 
                 book.title.toLowerCase() === title.toLowerCase() && 
                 book.author.toLowerCase() === author.toLowerCase()
             );
 
             if (duplicate) {
-                alert(`This book is already in your ${state.currentGenre} library!`);
+                const genreInfo = GENRE_INFO[genre] || state.customGenres.find(g => g.id === genre);
+                const genreName = genreInfo ? genreInfo.name : genre;
+                alert(`This book is already in your ${genreName} collection!`);
                 return;
             }
 
@@ -1564,21 +1491,11 @@
                 author,
                 imageUri: state.currentImageUri,
                 dateAdded: new Date().toISOString(),
-                genre: state.currentGenre
+                genre: genre
             };
 
-            // Try to add to collaborative collection first
-            if (state.isCollaborative) {
-                const success = await addBookToSupabase(newBook);
-                if (!success) {
-                    showNotification('⚠️ Added locally - collaborative sync failed');
-                }
-            }
-
-            addBookToCurrentGenre(newBook);
-            if (!state.isCollaborative) {
-                saveLocalBooks();
-            }
+            addBookToGenre(newBook, genre);
+            saveLocalBooks();
             
             // Clear form
             document.getElementById('title-input').value = '';
@@ -1586,22 +1503,29 @@
             document.getElementById('preview-image').style.display = 'none';
             state.currentImageUri = null;
             
-            const collabText = state.isCollaborative ? ' to shared library' : '';
-            showNotification(`✅ Book added${collabText}!`);
+            const genreInfo = GENRE_INFO[genre] || state.customGenres.find(g => g.id === genre);
+            const genreName = genreInfo ? genreInfo.name : genre;
+            showNotification(`✅ Book added to ${genreName}!`);
             renderBooks();
         }
 
         // Add book from search results
         async function addBookFromSearch(bookData) {
-            const currentBooks = getCurrentBooks();
+            const genre = document.getElementById('online-book-genre').value;
             
-            const duplicate = currentBooks.find(book => 
+            if (!state.books[genre]) {
+                state.books[genre] = [];
+            }
+            
+            const duplicate = state.books[genre].find(book => 
                 book.title.toLowerCase() === bookData.title.toLowerCase() && 
                 book.author.toLowerCase() === bookData.author.toLowerCase()
             );
 
             if (duplicate) {
-                alert(`This book is already in your ${state.currentGenre} library!`);
+                const genreInfo = GENRE_INFO[genre] || state.customGenres.find(g => g.id === genre);
+                const genreName = genreInfo ? genreInfo.name : genre;
+                alert(`This book is already in your ${genreName} collection!`);
                 return;
             }
 
@@ -1615,32 +1539,173 @@
                 source: 'online'
             };
 
-            // Add to collaborative collection if applicable
-            if (state.isCollaborative) {
-                const success = await addBookToSupabase(newBook);
-                if (!success) {
-                    showNotification('⚠️ Added locally - collaborative sync failed');
-                }
-            }
-
-            addBookToCurrentGenre(newBook);
-            if (!state.isCollaborative) {
-                saveLocalBooks();
-            }
+            addBookToGenre(newBook, genre);
+            saveLocalBooks();
             
             document.getElementById('search-modal').style.display = 'none';
             document.getElementById('online-search-input').value = '';
             document.getElementById('search-results').innerHTML = '';
             
-            const collabText = state.isCollaborative ? ' to shared library' : '';
-            showNotification(`✅ Book added${collabText}!`);
+            const genreInfo = GENRE_INFO[genre] || state.customGenres.find(g => g.id === genre);
+            const genreName = genreInfo ? genreInfo.name : genre;
+            showNotification(`✅ Book added to ${genreName}!`);
             renderBooks();
+        }
+
+        // Show move book modal
+        function moveBook(bookId) {
+            if (state.currentGenre === 'all') {
+                // Find which genre this book belongs to
+                let bookGenre = null;
+                let book = null;
+                
+                Object.keys(state.books).forEach(genre => {
+                    if (state.books[genre]) {
+                        const foundBook = state.books[genre].find(b => b.id === bookId);
+                        if (foundBook) {
+                            book = foundBook;
+                            bookGenre = genre;
+                        }
+                    }
+                });
+                
+                if (!book || !bookGenre) return;
+                
+                movingBookId = bookId;
+                
+                document.getElementById('move-book-info').textContent = 
+                    `Move "${book.title}" by ${book.author} to a different category:`;
+                
+                // Create genre selection buttons
+                const genreSelection = document.getElementById('genre-selection');
+                const availableGenres = Object.keys(GENRE_INFO).filter(g => g !== bookGenre);
+                const availableCustomGenres = state.customGenres.filter(g => g.id !== bookGenre);
+                
+                genreSelection.innerHTML = '';
+                
+                // Add default genres
+                availableGenres.forEach(genreId => {
+                    const genreInfo = GENRE_INFO[genreId];
+                    const button = document.createElement('button');
+                    button.className = 'secondary-button';
+                    button.textContent = `${genreInfo.emoji} ${genreInfo.name}`;
+                    button.onclick = () => performBookMove(bookId, bookGenre, genreId);
+                    genreSelection.appendChild(button);
+                });
+                
+                // Add custom genres
+                availableCustomGenres.forEach(genre => {
+                    const button = document.createElement('button');
+                    button.className = 'secondary-button';
+                    button.textContent = `${genre.emoji} ${genre.name}`;
+                    button.onclick = () => performBookMove(bookId, bookGenre, genre.id);
+                    genreSelection.appendChild(button);
+                });
+                
+                document.getElementById('move-modal').style.display = 'flex';
+            } else {
+                // Original move functionality for specific genre view
+                const currentBooks = getCurrentBooks();
+                const book = currentBooks.find(a => a.id === bookId);
+                if (!book) return;
+
+                // Don't allow moving books in collaborative collections
+                if (state.isCollaborative) {
+                    alert('Cannot move books in collaborative libraries. Books are shared with others in this specific category.');
+                    return;
+                }
+                
+                movingBookId = bookId;
+                
+                document.getElementById('move-book-info').textContent = 
+                    `Move "${book.title}" by ${book.author} to a different category:`;
+                
+                // Create genre selection buttons
+                const genreSelection = document.getElementById('genre-selection');
+                const availableGenres = Object.keys(GENRE_INFO).filter(g => g !== state.currentGenre);
+                const availableCustomGenres = state.customGenres.filter(g => g.id !== state.currentGenre);
+                
+                genreSelection.innerHTML = '';
+                
+                // Add default genres
+                availableGenres.forEach(genreId => {
+                    const genreInfo = GENRE_INFO[genreId];
+                    const button = document.createElement('button');
+                    button.className = 'secondary-button';
+                    button.textContent = `${genreInfo.emoji} ${genreInfo.name}`;
+                    button.onclick = () => performBookMove(bookId, state.currentGenre, genreId);
+                    genreSelection.appendChild(button);
+                });
+                
+                // Add custom genres
+                availableCustomGenres.forEach(genre => {
+                    const button = document.createElement('button');
+                    button.className = 'secondary-button';
+                    button.textContent = `${genre.emoji} ${genre.name}`;
+                    button.onclick = () => performBookMove(bookId, state.currentGenre, genre.id);
+                    genreSelection.appendChild(button);
+                });
+                
+                document.getElementById('move-modal').style.display = 'flex';
+            }
+        }
+
+        // Perform the actual book move
+        function performBookMove(bookId, fromGenre, toGenre) {
+            const book = state.books[fromGenre].find(b => b.id === bookId);
+            if (!book) return;
+            
+            // Ensure target genre exists
+            if (!state.books[toGenre]) {
+                state.books[toGenre] = [];
+            }
+
+            // Check for duplicates in target genre
+            const duplicate = state.books[toGenre].find(b => 
+                b.title.toLowerCase() === book.title.toLowerCase() && 
+                b.author.toLowerCase() === book.author.toLowerCase()
+            );
+
+            if (duplicate) {
+                const genreInfo = GENRE_INFO[toGenre] || state.customGenres.find(g => g.id === toGenre);
+                const genreName = genreInfo ? genreInfo.name : toGenre;
+                alert(`"${book.title}" already exists in ${genreName}!`);
+                return;
+            }
+
+            // Move book
+            state.books[toGenre].push(book);
+            state.books[fromGenre] = state.books[fromGenre].filter(b => b.id !== bookId);
+            
+            saveLocalBooks();
+            document.getElementById('move-modal').style.display = 'none';
+            renderBooks();
+            
+            const genreInfo = GENRE_INFO[toGenre] || state.customGenres.find(g => g.id === toGenre);
+            const genreName = genreInfo ? genreInfo.name : toGenre;
+            showNotification(`📁 Moved "${book.title}" to ${genreName}!`);
         }
 
         // Edit book functionality
         function editBook(bookId) {
-            const currentBooks = getCurrentBooks();
-            const book = currentBooks.find(a => a.id === bookId);
+            let book, currentGenre;
+            
+            if (state.currentGenre === 'all') {
+                // Find the book across all genres
+                Object.keys(state.books).forEach(genre => {
+                    if (state.books[genre]) {
+                        const foundBook = state.books[genre].find(b => b.id === bookId);
+                        if (foundBook) {
+                            book = foundBook;
+                            currentGenre = genre;
+                        }
+                    }
+                });
+            } else {
+                currentGenre = state.currentGenre;
+                book = state.books[currentGenre].find(b => b.id === bookId);
+            }
+            
             if (!book) return;
 
             editingBookId = bookId;
@@ -1660,73 +1725,6 @@
             document.getElementById('edit-modal').style.display = 'flex';
         }
 
-        // Move book between genres (fixed for collaborative collections)
-        function moveBook(bookId) {
-            // Don't allow moving books in collaborative collections
-            if (state.isCollaborative) {
-                alert('Cannot move books in collaborative libraries. Books are shared with others in this specific category.');
-                return;
-            }
-            
-            const currentBooks = getCurrentBooks();
-            const book = currentBooks.find(a => a.id === bookId);
-            if (!book) return;
-
-            // Get all available genres
-            const allGenres = ['main', 'fiction', 'mystery', 'sci-fi', 'romance', 'history', 'biography', 'self-help', 'business'];
-            const customGenreNames = state.customGenres.map(g => g.id);
-            const availableGenres = [...allGenres, ...customGenreNames].filter(g => g !== state.currentGenre);
-
-            // Show genre selection
-            const genreNames = {
-                'main': '📚 Main Library',
-                'fiction': '📖 Fiction', 
-                'mystery': '🔍 Mystery',
-                'sci-fi': '🚀 Sci-Fi',
-                'romance': '💕 Romance',
-                'history': '🏛️ History',
-                'biography': '👤 Biography',
-                'self-help': '🌟 Self-Help',
-                'business': '💼 Business'
-            };
-
-            // Add custom genre names
-            state.customGenres.forEach(g => {
-                genreNames[g.id] = `${g.emoji} ${g.name}`;
-            });
-
-            const genreList = availableGenres.map(g => `• ${genreNames[g] || g}`).join('\n');
-            const targetGenre = prompt(`Move "${book.title}" to which category?\n\nAvailable categories:\n${genreList}\n\nEnter category name (e.g., "fiction", "mystery", "sci-fi"):`);
-
-            if (targetGenre && availableGenres.includes(targetGenre.toLowerCase())) {
-                const target = targetGenre.toLowerCase();
-                
-                // Ensure target genre exists
-                if (!state.books[target]) {
-                    state.books[target] = [];
-                }
-
-                // Check for duplicates in target genre
-                const duplicate = state.books[target].find(a => 
-                    a.title.toLowerCase() === book.title.toLowerCase() && 
-                    a.author.toLowerCase() === book.author.toLowerCase()
-                );
-
-                if (duplicate) {
-                    alert(`"${book.title}" already exists in ${genreNames[target]}!`);
-                    return;
-                }
-
-                // Move book
-                state.books[target].push(book);
-                state.books[state.currentGenre] = state.books[state.currentGenre].filter(a => a.id !== bookId);
-                
-                saveLocalBooks();
-                renderBooks();
-                showNotification(`📁 Moved "${book.title}" to ${genreNames[target]}!`);
-            }
-        }
-
         function saveEditedBook() {
             if (!editingBookId) return;
 
@@ -1739,34 +1737,43 @@
                 return;
             }
 
-            const currentBooks = getCurrentBooks();
+            // Find the book across all genres
+            let foundGenre = null;
+            let bookIndex = -1;
+            
+            Object.keys(state.books).forEach(genre => {
+                if (state.books[genre]) {
+                    const index = state.books[genre].findIndex(b => b.id === editingBookId);
+                    if (index !== -1) {
+                        foundGenre = genre;
+                        bookIndex = index;
+                    }
+                }
+            });
+            
+            if (foundGenre && bookIndex !== -1) {
+                // Check for duplicates in the same genre (exclude current book)
+                const duplicate = state.books[foundGenre].find(book => 
+                    book.id !== editingBookId &&
+                    book.title.toLowerCase() === title.toLowerCase() && 
+                    book.author.toLowerCase() === author.toLowerCase()
+                );
 
-            // Check for duplicates (exclude current book)
-            const duplicate = currentBooks.find(book => 
-                book.id !== editingBookId &&
-                book.title.toLowerCase() === title.toLowerCase() && 
-                book.author.toLowerCase() === author.toLowerCase()
-            );
+                if (duplicate) {
+                    alert('This book is already in your library!');
+                    return;
+                }
 
-            if (duplicate) {
-                alert('This book is already in your library!');
-                return;
-            }
-
-            // Update the book
-            const bookIndex = state.books[state.currentGenre].findIndex(a => a.id === editingBookId);
-            if (bookIndex !== -1) {
-                state.books[state.currentGenre][bookIndex] = {
-                    ...state.books[state.currentGenre][bookIndex],
+                // Update the book
+                state.books[foundGenre][bookIndex] = {
+                    ...state.books[foundGenre][bookIndex],
                     title,
                     author,
                     year,
                     lastModified: new Date().toISOString()
                 };
                 
-                if (!state.isCollaborative) {
-                    saveLocalBooks();
-                }
+                saveLocalBooks();
                 renderBooks();
                 
                 document.getElementById('edit-modal').style.display = 'none';
@@ -1781,21 +1788,21 @@
             editingBookId = null;
         }
 
-        // Delete book (with collaborative support)
+        // Delete book
         async function deleteBook(bookId) {
             if (confirm('Are you sure you want to remove this book from your library?')) {
-                // Try to delete from collaborative collection first
-                if (state.isCollaborative) {
-                    const success = await deleteBookFromSupabase(bookId);
-                    if (!success) {
-                        showNotification('⚠️ Removed locally - collaborative sync failed');
-                    }
+                if (state.currentGenre === 'all') {
+                    // Find and delete from the correct genre
+                    Object.keys(state.books).forEach(genre => {
+                        if (state.books[genre]) {
+                            state.books[genre] = state.books[genre].filter(book => book.id !== bookId);
+                        }
+                    });
+                } else {
+                    state.books[state.currentGenre] = state.books[state.currentGenre].filter(book => book.id !== bookId);
                 }
                 
-                state.books[state.currentGenre] = state.books[state.currentGenre].filter(book => book.id !== bookId);
-                if (!state.isCollaborative) {
-                    saveLocalBooks();
-                }
+                saveLocalBooks();
                 renderBooks();
                 showNotification('🗑️ Book deleted from library');
             }
@@ -1809,7 +1816,9 @@
             let filtered = currentBooks.filter(book => {
                 const titleMatch = book.title.toLowerCase().includes(searchTerm);
                 const authorMatch = book.author.toLowerCase().includes(searchTerm);
-                return titleMatch || authorMatch;
+                const genreMatch = state.currentGenre === 'all' && book.genreInfo ? 
+                    book.genreInfo.name.toLowerCase().includes(searchTerm) : false;
+                return titleMatch || authorMatch || genreMatch;
             });
 
             return filtered.sort((a, b) => a.title.localeCompare(b.title));
@@ -1822,12 +1831,15 @@
             const currentBooks = getCurrentBooks();
             
             updateCollectionHeader();
+            updateGenreStats();
             
             if (currentBooks.length === 0) {
-                const collabText = state.isCollaborative ? 'shared ' : '';
+                const viewText = state.currentGenre === 'all' ? 'entire collection' : 
+                    `${(GENRE_INFO[state.currentGenre] || state.customGenres.find(g => g.id === state.currentGenre) || {name: state.currentGenre}).name} library`;
+                
                 container.innerHTML = `
                     <div class="empty-state">
-                        <h3>No books in your ${collabText}${state.currentGenre} library yet!</h3>
+                        <h3>No books in your ${viewText} yet!</h3>
                         <p>Start by searching for books online or adding them manually.</p>
                         ${state.isCollaborative ? '<p><strong>🤝 This is a collaborative library - others can add books too!</strong></p>' : ''}
                     </div>
@@ -1848,13 +1860,14 @@
             }
 
             if (state.viewMode === 'list') {
+                const headerCols = state.currentGenre === 'all' ? 
+                    '<div>Book</div><div>Author</div><div>Genre</div><div>Actions</div>' :
+                    '<div>Book</div><div>Author</div><div>Year</div><div>Actions</div>';
+                    
                 container.innerHTML = `
                     <div class="list-container">
-                        <div class="list-header">
-                            <div>Book</div>
-                            <div>Author</div>
-                            <div>Year</div>
-                            <div>Actions</div>
+                        <div class="list-header" style="grid-template-columns: ${state.currentGenre === 'all' ? '2fr 1fr 120px 100px' : '2fr 1fr 100px 100px'};">
+                            ${headerCols}
                         </div>
                         ${data.map(renderListRow).join('')}
                     </div>
@@ -1868,21 +1881,25 @@
             }
         }
 
-        // Render book card (with genre badge for "All Books" view)
+        // Render book card
         function renderBookCard(item) {
             const collabBadge = item.isCollaborative ? '🤝' : '';
-            const genreBadge = state.currentGenre === 'all' && item.displayGenre ? `<span style="background: #007AFF; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; position: absolute; top: 40px; right: 10px;">${item.displayGenre.toUpperCase()}</span>` : '';
-            const moveButton = !state.isCollaborative && state.currentGenre !== 'all' ? `<button class="move-button" onclick="moveBook('${item.id}')" title="Move to different category">📁</button>` : '';
+            const moveButton = !state.isCollaborative ? `<button class="move-button" onclick="moveBook('${item.id}')" title="Move to different category">📁</button>` : '';
+            
+            // Show genre badge if viewing all books
+            const genreBadge = state.currentGenre === 'all' && item.genreInfo ? 
+                `<div class="book-genre-badge">${item.genreInfo.emoji} ${item.genreInfo.name}</div>` : '';
+            
             return `
                 <div class="book-card">
                     <button class="delete-button" onclick="deleteBook('${item.id}')" title="Delete book">×</button>
                     <button class="edit-button" onclick="editBook('${item.id}')" title="Edit book">✏️</button>
                     ${moveButton}
-                    ${genreBadge}
                     ${item.imageUri ? 
                         `<img src="${item.imageUri}" alt="${item.title}" class="book-image" />` :
                         `<div class="placeholder-image">📚</div>`
                     }
+                    ${genreBadge}
                     <div class="book-title">${collabBadge} ${item.title}</div>
                     <div class="book-author">${item.author}</div>
                     ${item.year ? `<div class="book-year">${item.year}</div>` : ''}
@@ -1893,8 +1910,10 @@
         // Render list row
         function renderListRow(item) {
             const collabBadge = item.isCollaborative ? '🤝 ' : '';
+            const isAllView = state.currentGenre === 'all';
+            
             return `
-                <div class="list-row">
+                <div class="list-row" style="grid-template-columns: ${isAllView ? '2fr 1fr 120px 100px' : '2fr 1fr 100px 100px'};">
                     <div>
                         <div class="list-book-info">
                             ${state.showCovers && item.imageUri ? 
@@ -1905,7 +1924,7 @@
                         </div>
                     </div>
                     <div>${item.author}</div>
-                    <div>${item.year || '—'}</div>
+                    <div>${isAllView ? (item.genreInfo ? `${item.genreInfo.emoji} ${item.genreInfo.name}` : item.genre) : (item.year || '—')}</div>
                     <div>
                         <button class="delete-button-small" onclick="deleteBook('${item.id}')">Delete</button>
                     </div>
@@ -1966,14 +1985,7 @@
                 const supabaseConnected = await testSupabaseConnection();
                 
                 if (supabaseConnected) {
-                    updateDebugInfo('Checking for shared collection...');
-                    
-                    // Check for shared collection
-                    const sharedCollectionLoaded = await checkForSharedCollection();
-                    
-                    if (!sharedCollectionLoaded) {
-                        updateDebugInfo('Ready - local mode');
-                    }
+                    updateDebugInfo('Ready - collaborative features available');
                 } else {
                     updateDebugInfo('Ready - local only');
                     showNotification('⚠️ Collaborative features unavailable - using local storage');
@@ -2010,7 +2022,7 @@
                     const cleanName = genreName.trim();
                     const genreId = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
                     
-                    if (state.books[genreId] || state.customGenres.find(g => g.id === genreId)) {
+                    if (state.books[genreId] || state.customGenres.find(g => g.id === genreId) || GENRE_INFO[genreId]) {
                         alert('This category already exists!');
                         e.target.value = state.currentGenre;
                         return;
@@ -2024,35 +2036,20 @@
                     
                     state.books[genreId] = [];
                     
-                    updateGenreSelector();
+                    updateGenreSelectors();
                     state.currentGenre = genreId;
                     e.target.value = genreId;
                     
-                    // Only reset collaborative state if not in active session
-                    if (!sessionStorage.getItem('bookCollaborativeSession')) {
-                        state.isCollaborative = false;
-                        state.sharedCollectionId = null;
-                    }
+                    state.isCollaborative = false;
+                    state.sharedCollectionId = null;
                     
                     saveLocalBooks();
                     renderBooks();
                     showNotification(`✅ Created new category: ${genreEmoji} ${cleanName}!`);
                 } else {
-                    // Don't allow switching to collaborative mode when viewing all books
-                    if (e.target.value === 'all') {
-                        state.currentGenre = 'all';
-                        state.isCollaborative = false;
-                        state.sharedCollectionId = null;
-                    } else {
-                        state.currentGenre = e.target.value;
-                        
-                        // Only reset collaborative state if not in active session
-                        if (!sessionStorage.getItem('bookCollaborativeSession')) {
-                            state.isCollaborative = false;
-                            state.sharedCollectionId = null;
-                        }
-                    }
-                    
+                    state.currentGenre = e.target.value;
+                    state.isCollaborative = false;
+                    state.sharedCollectionId = null;
                     renderBooks();
                 }
             });
@@ -2097,57 +2094,20 @@
                 document.getElementById('search-modal').style.display = 'flex';
             });
 
-            // Share collection button (collaborative sharing)
+            // Share collection button
             document.getElementById('share-collection-btn').addEventListener('click', async () => {
-                const currentBooks = getCurrentBooks();
-                if (currentBooks.length === 0) {
-                    alert(`Add some books to your ${state.currentGenre} library first!`);
-                    return;
-                }
-                
-                if (!supabaseClient) {
-                    showNotification('❌ Collaborative sharing not available - Supabase connection failed');
-                    return;
-                }
-                
-                try {
-                    updateDebugInfo('Creating share link...');
-                    
-                    // Create collaborative collection in Supabase
-                    const collectionId = await createCollaborativeCollection(currentBooks, state.currentGenre);
-                    
-                    // Create short shareable URL
-                    const shareableURL = `${window.location.origin}${window.location.pathname}?share=${collectionId}`;
-                    
-                    console.log(`✅ Created collaborative collection: ${collectionId}`);
-                    updateDebugInfo(`Share created: ${collectionId}`);
-                    
-                    // Show share link in modal
-                    showShareLink(shareableURL);
-                    
-                    // Store for copy button
-                    window.currentShareURL = shareableURL;
-                    
-                    document.getElementById('share-modal').style.display = 'flex';
-                    
-                } catch (error) {
-                    console.error('❌ Failed to create collaborative collection:', error);
-                    updateDebugInfo('Share creation failed');
-                    showNotification('❌ Failed to create shareable library. Please try again.');
-                }
-            });
-
-            // Copy share link button
-            document.getElementById('copy-share-link-btn').addEventListener('click', () => {
-                if (window.currentShareURL) {
-                    copyToClipboard(window.currentShareURL);
-                }
+                showNotification('📱 Share feature coming soon! Currently in local mode.');
             });
 
             // Edit book functionality
             document.getElementById('save-edit-btn').addEventListener('click', saveEditedBook);
             document.getElementById('cancel-edit-btn').addEventListener('click', cancelEdit);
             document.getElementById('close-edit-modal-btn').addEventListener('click', cancelEdit);
+
+            // Move book modal
+            document.getElementById('close-move-modal-btn').addEventListener('click', () => {
+                document.getElementById('move-modal').style.display = 'none';
+            });
 
             // Close share modal
             document.getElementById('close-share-modal-btn').addEventListener('click', () => {
@@ -2197,6 +2157,12 @@
             document.getElementById('search-modal').addEventListener('click', (e) => {
                 if (e.target === e.currentTarget) {
                     document.getElementById('search-modal').style.display = 'none';
+                }
+            });
+
+            document.getElementById('move-modal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    document.getElementById('move-modal').style.display = 'none';
                 }
             });
         });
