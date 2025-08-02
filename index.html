@@ -409,15 +409,47 @@
             display: flex;
             align-items: center;
             padding: 15px;
-            border: 1px solid #eee;
+            border: 2px solid #eee;
             border-radius: 8px;
             margin-bottom: 10px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
+            position: relative;
         }
         
         .search-result-card:hover {
             background-color: #f0f0f0;
+        }
+
+        .search-result-card.selected {
+            border-color: #007AFF;
+            background-color: #f0f8ff;
+        }
+
+        .search-result-checkbox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .bulk-add-controls {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 15px;
+            border-top: 2px solid #eee;
+            border-radius: 8px 8px 0 0;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .selected-count {
+            color: #007AFF;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
         
         .search-result-image {
@@ -973,7 +1005,8 @@
             currentImageUri: null,
             customGenres: [],
             isCollaborative: false,
-            sharedCollectionId: null
+            sharedCollectionId: null,
+            selectedBooks: new Set() // Track selected books for bulk add
         };
 
         let editingBookId = null;
@@ -1509,7 +1542,7 @@
             renderBooks();
         }
 
-        // Add book from search results
+        // Add book from search results (single book)
         async function addBookFromSearch(bookData) {
             const genre = document.getElementById('online-book-genre').value;
             
@@ -1530,7 +1563,7 @@
             }
 
             const newBook = {
-                id: Date.now().toString(),
+                id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
                 title: bookData.title,
                 author: bookData.author,
                 year: bookData.year,
@@ -1542,14 +1575,133 @@
             addBookToGenre(newBook, genre);
             saveLocalBooks();
             
+            const genreInfo = GENRE_INFO[genre] || state.customGenres.find(g => g.id === genre);
+            const genreName = genreInfo ? genreInfo.name : genre;
+            showNotification(`✅ Book added to ${genreName}!`);
+            renderBooks();
+        }
+
+        // Toggle book selection for bulk add
+        function toggleBookSelection(bookData, checkbox) {
+            const bookKey = `${bookData.title}-${bookData.author}`;
+            
+            if (checkbox.checked) {
+                state.selectedBooks.add(JSON.stringify(bookData));
+            } else {
+                state.selectedBooks.delete(JSON.stringify(bookData));
+            }
+            
+            updateBulkAddControls();
+            updateSearchResultVisuals();
+        }
+
+        // Update bulk add controls visibility and content
+        function updateBulkAddControls() {
+            const bulkControls = document.getElementById('bulk-add-controls');
+            const selectedCount = document.getElementById('selected-count');
+            
+            if (state.selectedBooks.size > 0) {
+                bulkControls.style.display = 'block';
+                selectedCount.textContent = `${state.selectedBooks.size} book${state.selectedBooks.size > 1 ? 's' : ''} selected`;
+            } else {
+                bulkControls.style.display = 'none';
+            }
+        }
+
+        // Update visual styling for selected search results
+        function updateSearchResultVisuals() {
+            const searchCards = document.querySelectorAll('.search-result-card');
+            searchCards.forEach(card => {
+                const checkbox = card.querySelector('.search-result-checkbox');
+                if (checkbox && checkbox.checked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+        }
+
+        // Add all selected books to collection
+        async function addSelectedBooks() {
+            if (state.selectedBooks.size === 0) {
+                alert('No books selected!');
+                return;
+            }
+            
+            const genre = document.getElementById('online-book-genre').value;
+            
+            if (!state.books[genre]) {
+                state.books[genre] = [];
+            }
+            
+            let addedCount = 0;
+            let duplicateCount = 0;
+            
+            for (const bookDataStr of state.selectedBooks) {
+                const bookData = JSON.parse(bookDataStr);
+                
+                // Check for duplicates
+                const duplicate = state.books[genre].find(book => 
+                    book.title.toLowerCase() === bookData.title.toLowerCase() && 
+                    book.author.toLowerCase() === bookData.author.toLowerCase()
+                );
+
+                if (duplicate) {
+                    duplicateCount++;
+                    continue;
+                }
+
+                const newBook = {
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                    title: bookData.title,
+                    author: bookData.author,
+                    year: bookData.year,
+                    imageUri: bookData.imageUrl,
+                    dateAdded: new Date().toISOString(),
+                    source: 'online'
+                };
+
+                addBookToGenre(newBook, genre);
+                addedCount++;
+                
+                // Small delay to ensure unique IDs
+                await new Promise(resolve => setTimeout(resolve, 1));
+            }
+            
+            saveLocalBooks();
+            
+            // Clear selections
+            state.selectedBooks.clear();
+            
+            // Close modal and clear search
             document.getElementById('search-modal').style.display = 'none';
             document.getElementById('online-search-input').value = '';
             document.getElementById('search-results').innerHTML = '';
             
             const genreInfo = GENRE_INFO[genre] || state.customGenres.find(g => g.id === genre);
             const genreName = genreInfo ? genreInfo.name : genre;
-            showNotification(`✅ Book added to ${genreName}!`);
+            
+            let message = `✅ Added ${addedCount} book${addedCount > 1 ? 's' : ''} to ${genreName}!`;
+            if (duplicateCount > 0) {
+                message += ` (${duplicateCount} duplicate${duplicateCount > 1 ? 's' : ''} skipped)`;
+            }
+            
+            showNotification(message);
             renderBooks();
+        }
+
+        // Clear all selections
+        function clearBookSelections() {
+            state.selectedBooks.clear();
+            
+            // Uncheck all checkboxes
+            const checkboxes = document.querySelectorAll('.search-result-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            updateBulkAddControls();
+            updateSearchResultVisuals();
         }
 
         // Show move book modal
@@ -1953,9 +2105,17 @@
             }
             
             container.innerHTML = `
-                <h3>Search Results:</h3>
-                ${results.map(item => `
-                    <div class="search-result-card" onclick="addBookFromSearch(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                <h3>Search Results (${results.length} found):</h3>
+                <p style="color: #666; margin-bottom: 15px;">
+                    📖 Click individual books to add them one by one, or use checkboxes to select multiple books for bulk adding.
+                </p>
+                ${results.map((item, index) => `
+                    <div class="search-result-card" onclick="handleSearchResultClick(event, ${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                        <input 
+                            type="checkbox" 
+                            class="search-result-checkbox" 
+                            onclick="event.stopPropagation(); toggleBookSelection(${JSON.stringify(item).replace(/"/g, '&quot;')}, this)"
+                        />
                         ${item.imageUrl ? 
                             `<img src="${item.imageUrl}" alt="${item.title}" class="search-result-image" />` :
                             `<div class="search-result-image" style="background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">📚</div>`
@@ -1965,10 +2125,40 @@
                             <div class="search-result-author">${item.author}</div>
                             <div class="search-result-year">${item.year}</div>
                         </div>
-                        <button class="add-button-text">ADD</button>
+                        <button class="add-button-text" onclick="event.stopPropagation(); addBookFromSearch(${JSON.stringify(item).replace(/"/g, '&quot;')})">ADD</button>
                     </div>
                 `).join('')}
+                
+                <div class="bulk-add-controls" id="bulk-add-controls">
+                    <div class="selected-count" id="selected-count">0 books selected</div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="primary-button" onclick="addSelectedBooks()" style="flex: 1;">
+                            ➕ Add Selected Books
+                        </button>
+                        <button class="secondary-button" onclick="clearBookSelections()" style="flex: 1;">
+                            ❌ Clear Selection
+                        </button>
+                    </div>
+                </div>
             `;
+        }
+
+        // Handle clicking on search result card (for individual add or selection)
+        function handleSearchResultClick(event, bookData) {
+            // Don't do anything if clicking on checkbox or add button (handled separately)
+            if (event.target.classList.contains('search-result-checkbox') || 
+                event.target.classList.contains('add-button-text')) {
+                return;
+            }
+            
+            // Toggle checkbox selection when clicking on the card
+            const card = event.currentTarget;
+            const checkbox = card.querySelector('.search-result-checkbox');
+            
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                toggleBookSelection(bookData, checkbox);
+            }
         }
 
         // Initialize app
@@ -2116,6 +2306,8 @@
 
             // Close modal button
             document.getElementById('close-modal-btn').addEventListener('click', () => {
+                // Clear selections when closing modal
+                state.selectedBooks.clear();
                 document.getElementById('search-modal').style.display = 'none';
             });
 
@@ -2156,6 +2348,8 @@
 
             document.getElementById('search-modal').addEventListener('click', (e) => {
                 if (e.target === e.currentTarget) {
+                    // Clear selections when closing modal
+                    state.selectedBooks.clear();
                     document.getElementById('search-modal').style.display = 'none';
                 }
             });
